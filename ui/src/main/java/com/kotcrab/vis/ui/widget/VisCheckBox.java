@@ -21,7 +21,12 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Stack;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -39,175 +44,178 @@ import com.kotcrab.vis.ui.util.BorderOwner;
  * <p>
  * When listening for checkbox press {@link ChangeListener} should be always preferred (instead of {@link ClickListener}).
  * {@link ClickListener} does not support disabling checkbox and will still report checkbox presses.
+ *
  * @author Nathan Sweet
  * @author Kotcrab
  * @see CheckBox
  */
 public class VisCheckBox extends TextButton implements Focusable, BorderOwner {
-	private VisCheckBoxStyle style;
+    private VisCheckBoxStyle style;
 
-	private Image bgImage;
-	private Image tickImage;
-	private Stack imageStack;
-	private Cell<Stack> imageStackCell;
+    private final Image bgImage;
+    private final Image tickImage;
+    private final Stack imageStack;
+    private final Cell<Stack> imageStackCell;
 
-	private boolean drawBorder;
-	private boolean stateInvalid;
-	private boolean focusBorderEnabled = true;
+    private boolean drawBorder;
+    private boolean stateInvalid;
+    private boolean focusBorderEnabled = true;
 
-	public VisCheckBox (String text) {
-		this(text, VisUI.getSkin().get(VisCheckBoxStyle.class));
-	}
+    public VisCheckBox(String text) {
+        this(text, VisUI.getSkin().get(VisCheckBoxStyle.class));
+    }
 
-	public VisCheckBox (String text, boolean checked) {
-		this(text, VisUI.getSkin().get(VisCheckBoxStyle.class));
-		setChecked(checked);
-	}
+    public VisCheckBox(String text, boolean checked) {
+        this(text, VisUI.getSkin().get(VisCheckBoxStyle.class));
+        setChecked(checked);
+    }
 
-	public VisCheckBox (String text, String styleName) {
-		this(text, VisUI.getSkin().get(styleName, VisCheckBoxStyle.class));
-	}
+    public VisCheckBox(String text, String styleName) {
+        this(text, VisUI.getSkin().get(styleName, VisCheckBoxStyle.class));
+    }
 
-	public VisCheckBox (String text, VisCheckBoxStyle style) {
-		super(text, style);
-		clearChildren();
+    public VisCheckBox(String text, VisCheckBoxStyle style) {
+        super(text, style);
+        clearChildren();
 
-		bgImage = new Image(style.checkBackground);
-		tickImage = new Image(style.tick);
-		imageStackCell = add(imageStack = new Stack(bgImage, tickImage));
-		Label label = getLabel();
-		add(label).padLeft(5);
-		label.setAlignment(Align.left);
-		setSize(getPrefWidth(), getPrefHeight());
+        bgImage = new Image(style.checkBackground);
+        tickImage = new Image(style.tick);
+        imageStackCell = add(imageStack = new Stack(bgImage, tickImage));
+        Label label = getLabel();
+        add(label).padLeft(5);
+        label.setAlignment(Align.left);
+        setSize(getPrefWidth(), getPrefHeight());
 
-		addListener(new InputListener() {
-			@Override
-			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				if (isDisabled() == false) FocusManager.switchFocus(getStage(), VisCheckBox.this);
-				return false;
-			}
-		});
-	}
+        addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                if (!isDisabled()) FocusManager.switchFocus(getStage(), VisCheckBox.this);
+                return false;
+            }
+        });
+    }
 
-	/**
-	 * Returns the checkbox's style. Modifying the returned style may not have an effect until {@link #setStyle(ButtonStyle)} is
-	 * called.
-	 */
-	@Override
-	public VisCheckBoxStyle getStyle () {
-		return style;
-	}
+    /**
+     * Returns the checkbox's style. Modifying the returned style may not have an effect until {@link #setStyle(ButtonStyle)} is
+     * called.
+     */
+    @Override
+    public VisCheckBoxStyle getStyle() {
+        return style;
+    }
 
-	@Override
-	public void setStyle (ButtonStyle style) {
-		if (style instanceof VisCheckBoxStyle == false)
-			throw new IllegalArgumentException("style must be a VisCheckBoxStyle.");
-		super.setStyle(style);
-		this.style = (VisCheckBoxStyle) style;
-	}
+    @Override
+    public void setStyle(ButtonStyle style) {
+        if (!(style instanceof VisCheckBoxStyle))
+            throw new IllegalArgumentException("style must be a VisCheckBoxStyle.");
+        super.setStyle(style);
+        this.style = (VisCheckBoxStyle) style;
+    }
 
-	@Override
-	public void draw (Batch batch, float parentAlpha) {
-		bgImage.setDrawable(getCheckboxBgImage());
-		tickImage.setDrawable(getCheckboxTickImage());
-		super.draw(batch, parentAlpha);
+    @Override
+    public void draw(Batch batch, float parentAlpha) {
+        bgImage.setDrawable(getCheckboxBgImage());
+        tickImage.setDrawable(getCheckboxTickImage());
+        super.draw(batch, parentAlpha);
 
-		if (isDisabled() == false && stateInvalid && style.errorBorder != null) {
-			style.errorBorder.draw(batch, getX() + imageStack.getX(), getY() + imageStack.getY(), imageStack.getWidth(), imageStack.getHeight());
-		} else if (focusBorderEnabled && drawBorder && style.focusBorder != null) {
-			style.focusBorder.draw(batch, getX() + imageStack.getX(), getY() + imageStack.getY(), imageStack.getWidth(), imageStack.getHeight());
-		}
-	}
+        if (!isDisabled() && stateInvalid && style.errorBorder != null) {
+            style.errorBorder.draw(batch, getX() + imageStack.getX(), getY() + imageStack.getY(), imageStack.getWidth(), imageStack.getHeight());
+        } else if (focusBorderEnabled && drawBorder && style.focusBorder != null) {
+            style.focusBorder.draw(batch, getX() + imageStack.getX(), getY() + imageStack.getY(), imageStack.getWidth(), imageStack.getHeight());
+        }
+    }
 
-	protected Drawable getCheckboxBgImage () {
-		if (isDisabled()) return style.checkBackground;
-		if (isPressed()) return style.checkBackgroundDown;
-		if (isOver()) return style.checkBackgroundOver;
-		return style.checkBackground;
-	}
+    protected Drawable getCheckboxBgImage() {
+        if (isDisabled()) return style.checkBackground;
+        if (isPressed()) return style.checkBackgroundDown;
+        if (isOver()) return style.checkBackgroundOver;
+        return style.checkBackground;
+    }
 
-	protected Drawable getCheckboxTickImage () {
-		if (isChecked()) {
-			return isDisabled() ? style.tickDisabled : style.tick;
-		}
-		return null;
-	}
+    protected Drawable getCheckboxTickImage() {
+        if (isChecked()) {
+            return isDisabled() ? style.tickDisabled : style.tick;
+        }
+        return null;
+    }
 
-	public Image getBackgroundImage () {
-		return bgImage;
-	}
+    public Image getBackgroundImage() {
+        return bgImage;
+    }
 
-	public Image getTickImage () {
-		return tickImage;
-	}
+    public Image getTickImage() {
+        return tickImage;
+    }
 
-	public Stack getImageStack () {
-		return imageStack;
-	}
+    public Stack getImageStack() {
+        return imageStack;
+    }
 
-	public Cell<Stack> getImageStackCell () {
-		return imageStackCell;
-	}
+    public Cell<Stack> getImageStackCell() {
+        return imageStackCell;
+    }
 
-	/** @param stateInvalid if true error border around this checkbox will be drawn. Does not affect any other properties */
-	public void setStateInvalid (boolean stateInvalid) {
-		this.stateInvalid = stateInvalid;
-	}
+    /**
+     * @param stateInvalid if true error border around this checkbox will be drawn. Does not affect any other properties
+     */
+    public void setStateInvalid(boolean stateInvalid) {
+        this.stateInvalid = stateInvalid;
+    }
 
-	public boolean setStateInvalid () {
-		return stateInvalid;
-	}
+    public boolean setStateInvalid() {
+        return stateInvalid;
+    }
 
-	@Override
-	public void focusLost () {
-		drawBorder = false;
-	}
+    @Override
+    public void focusLost() {
+        drawBorder = false;
+    }
 
-	@Override
-	public void focusGained () {
-		drawBorder = true;
-	}
+    @Override
+    public void focusGained() {
+        drawBorder = true;
+    }
 
-	@Override
-	public boolean isFocusBorderEnabled () {
-		return focusBorderEnabled;
-	}
+    @Override
+    public boolean isFocusBorderEnabled() {
+        return focusBorderEnabled;
+    }
 
-	@Override
-	public void setFocusBorderEnabled (boolean focusBorderEnabled) {
-		this.focusBorderEnabled = focusBorderEnabled;
-	}
+    @Override
+    public void setFocusBorderEnabled(boolean focusBorderEnabled) {
+        this.focusBorderEnabled = focusBorderEnabled;
+    }
 
-	static public class VisCheckBoxStyle extends TextButtonStyle {
-		public Drawable focusBorder;
-		public Drawable errorBorder;
+    static public class VisCheckBoxStyle extends TextButtonStyle {
+        public Drawable focusBorder;
+        public Drawable errorBorder;
 
-		public Drawable checkBackground;
-		public Drawable checkBackgroundOver;
-		public Drawable checkBackgroundDown;
-		public Drawable tick;
-		public Drawable tickDisabled;
+        public Drawable checkBackground;
+        public Drawable checkBackgroundOver;
+        public Drawable checkBackgroundDown;
+        public Drawable tick;
+        public Drawable tickDisabled;
 
-		public VisCheckBoxStyle () {
-			super();
-		}
+        public VisCheckBoxStyle() {
+            super();
+        }
 
-		public VisCheckBoxStyle (Drawable checkBackground, Drawable tick, BitmapFont font, Color fontColor) {
-			this.checkBackground = checkBackground;
-			this.tick = tick;
-			this.font = font;
-			this.fontColor = fontColor;
-		}
+        public VisCheckBoxStyle(Drawable checkBackground, Drawable tick, BitmapFont font, Color fontColor) {
+            this.checkBackground = checkBackground;
+            this.tick = tick;
+            this.font = font;
+            this.fontColor = fontColor;
+        }
 
-		public VisCheckBoxStyle (VisCheckBoxStyle style) {
-			super(style);
-			this.focusBorder = style.focusBorder;
-			this.errorBorder = style.errorBorder;
-			this.checkBackground = style.checkBackground;
-			this.checkBackgroundOver = style.checkBackgroundOver;
-			this.checkBackgroundDown = style.checkBackgroundDown;
-			this.tick = style.tick;
-			this.tickDisabled = style.tickDisabled;
-		}
-	}
+        public VisCheckBoxStyle(VisCheckBoxStyle style) {
+            super(style);
+            this.focusBorder = style.focusBorder;
+            this.errorBorder = style.errorBorder;
+            this.checkBackground = style.checkBackground;
+            this.checkBackgroundOver = style.checkBackgroundOver;
+            this.checkBackgroundDown = style.checkBackgroundDown;
+            this.tick = style.tick;
+            this.tickDisabled = style.tickDisabled;
+        }
+    }
 }

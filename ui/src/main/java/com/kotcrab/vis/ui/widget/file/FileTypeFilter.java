@@ -32,90 +32,99 @@ import java.io.FileFilter;
  * This filter works by adding rules. Each rule has a description (showed in file chooser's filter select box) and a
  * list of extensions that it accepts. During selection user can switch active rule via select box. Additionally each
  * FileTypeFilter can support 'all types allowed' where all files are accepted regardless of their extension.
+ *
  * @author Kotcrab
  * @since 1.1.0
  */
 public class FileTypeFilter {
-	private boolean allTypesAllowed;
-	private Array<Rule> rules = new Array<Rule>();
+    private boolean allTypesAllowed;
+    private Array<Rule> rules = new Array<Rule>();
 
-	public FileTypeFilter (FileTypeFilter other) {
-		this.allTypesAllowed = other.allTypesAllowed;
-		this.rules = new Array<Rule>(other.rules);
-	}
+    public FileTypeFilter(FileTypeFilter other) {
+        this.allTypesAllowed = other.allTypesAllowed;
+        this.rules = new Array<Rule>(other.rules);
+    }
 
-	/** @param allTypesAllowed if true then user can choose "All types" in file chooser's filter select box. In that mode all files are shown */
-	public FileTypeFilter (boolean allTypesAllowed) {
-		this.allTypesAllowed = allTypesAllowed;
-	}
+    /**
+     * @param allTypesAllowed if true then user can choose "All types" in file chooser's filter select box. In that mode all files are shown
+     */
+    public FileTypeFilter(boolean allTypesAllowed) {
+        this.allTypesAllowed = allTypesAllowed;
+    }
 
-	/**
-	 * Adds new rule to {@link FileTypeFilter}
-	 * @param description rule description used in FileChooser's file type select box
-	 * @param extensions list of extensions without leading dot, eg. 'jpg', 'png' etc.
-	 */
-	public void addRule (String description, String... extensions) {
-		rules.add(new Rule(description, extensions));
-	}
+    /**
+     * Adds new rule to {@link FileTypeFilter}
+     *
+     * @param description rule description used in FileChooser's file type select box
+     * @param extensions  list of extensions without leading dot, eg. 'jpg', 'png' etc.
+     */
+    public void addRule(String description, String... extensions) {
+        rules.add(new Rule(description, extensions));
+    }
 
-	public Array<Rule> getRules () {
-		return rules;
-	}
+    public Array<Rule> getRules() {
+        return rules;
+    }
 
-	/**
-	 * Controls whether to allow 'all types allowed' mode, where all file types are shown.
-	 * @param allTypesAllowed if true then user can choose "All types" in file chooser's filter select box where all files are shown
-	 */
-	public void setAllTypesAllowed (boolean allTypesAllowed) {
-		this.allTypesAllowed = allTypesAllowed;
-	}
+    public boolean isAllTypesAllowed() {
+        return allTypesAllowed;
+    }
 
-	public boolean isAllTypesAllowed () {
-		return allTypesAllowed;
-	}
+    /**
+     * Controls whether to allow 'all types allowed' mode, where all file types are shown.
+     *
+     * @param allTypesAllowed if true then user can choose "All types" in file chooser's filter select box where all files are shown
+     */
+    public void setAllTypesAllowed(boolean allTypesAllowed) {
+        this.allTypesAllowed = allTypesAllowed;
+    }
 
-	/** Defines single rule for {@link FileTypeFilter}. Rule instances are immutable. */
-	public static class Rule {
-		private final String description;
-		private final Array<String> extensions = new Array<String>();
-		private final boolean allowAll;
+    /**
+     * Defines single rule for {@link FileTypeFilter}. Rule instances are immutable.
+     */
+    public static class Rule {
+        private final String description;
+        private final Array<String> extensions = new Array<String>();
+        private final boolean allowAll;
 
-		public Rule (String description) {
-			if (description == null) throw new IllegalArgumentException("description can't be null");
-			this.description = description;
-			this.allowAll = true;
-		}
+        public Rule(String description) {
+            if (description == null) throw new IllegalArgumentException("description can't be null");
+            this.description = description;
+            this.allowAll = true;
+        }
 
-		public Rule (String description, String... extensionList) {
-			if (description == null) throw new IllegalArgumentException("description can't be null");
-			if (extensionList == null || extensionList.length == 0)
-				throw new IllegalArgumentException("extensionList can't be null nor empty");
-			this.description = description;
-			this.allowAll = false;
-			for (String ext : extensionList) {
-				if (ext.startsWith(".")) ext = ext.substring(1);
-				extensions.add(ext.toLowerCase());
-			}
-		}
+        public Rule(String description, String... extensionList) {
+            if (description == null) throw new IllegalArgumentException("description can't be null");
+            if (extensionList == null || extensionList.length == 0)
+                throw new IllegalArgumentException("extensionList can't be null nor empty");
+            this.description = description;
+            this.allowAll = false;
+            for (String ext : extensionList) {
+                if (ext.startsWith(".")) ext = ext.substring(1);
+                extensions.add(ext.toLowerCase());
+            }
+        }
 
-		public boolean accept (FileHandle file) {
-			if (allowAll) return true;
-			String ext = file.extension().toLowerCase();
-			return extensions.contains(ext, false);
-		}
+        public boolean accept(FileHandle file) {
+            if (allowAll) return true;
+            String ext = file.extension().toLowerCase();
+            return extensions.contains(ext, false);
+        }
 
-		public String getDescription () {
-			return description;
-		}
+        public String getDescription() {
+            return description;
+        }
 
-		/** @return copy of extension list. */
-		public Array<String> getExtensions () {
-			return new Array<String>(extensions);
-		}
+        /**
+         * @return copy of extension list.
+         */
+        public Array<String> getExtensions() {
+            return new Array<String>(extensions);
+        }
 
-		@Override
-		public String toString () {
-			return description;
-		}
-	}
+        @Override
+        public String toString() {
+            return description;
+        }
+    }
 }

@@ -25,92 +25,93 @@ import java.util.Comparator;
 
 /**
  * Built-in adapter implementation for {@link ArrayList}.
+ *
  * @author Kotcrab
  * @since 1.0.0
  */
 public abstract class ArrayListAdapter<ItemT, ViewT extends Actor> extends AbstractListAdapter<ItemT, ViewT> {
-	private ArrayList<ItemT> array;
+    private final ArrayList<ItemT> array;
 
-	public ArrayListAdapter (ArrayList<ItemT> array) {
-		this.array = array;
-	}
+    public ArrayListAdapter(ArrayList<ItemT> array) {
+        this.array = array;
+    }
 
-	@Override
-	public Iterable<ItemT> iterable () {
-		return array;
-	}
+    @Override
+    public Iterable<ItemT> iterable() {
+        return array;
+    }
 
-	@Override
-	public int size () {
-		return array.size();
-	}
+    @Override
+    public int size() {
+        return array.size();
+    }
 
-	@Override
-	public int indexOf (ItemT item) {
-		return array.indexOf(item);
-	}
+    @Override
+    public int indexOf(ItemT item) {
+        return array.indexOf(item);
+    }
 
-	@Override
-	public void add (ItemT element) {
-		array.add(element);
-		itemAdded(element);
-	}
+    @Override
+    public void add(ItemT element) {
+        array.add(element);
+        itemAdded(element);
+    }
 
-	@Override
-	public ItemT get (int index) {
-		return array.get(index);
-	}
+    @Override
+    public ItemT get(int index) {
+        return array.get(index);
+    }
 
-	@Override
-	protected void sort (Comparator<ItemT> comparator) {
-		Collections.sort(array, comparator);
-	}
+    @Override
+    protected void sort(Comparator<ItemT> comparator) {
+        Collections.sort(array, comparator);
+    }
 
-	// Delegates
+    // Delegates
 
-	public ItemT set (int index, ItemT element) {
-		ItemT res = array.set(index, element);
-		itemsChanged();
-		return res;
-	}
+    public ItemT set(int index, ItemT element) {
+        ItemT res = array.set(index, element);
+        itemsChanged();
+        return res;
+    }
 
-	public void add (int index, ItemT element) {
-		array.add(index, element);
-		itemAdded(element);
-	}
+    public void add(int index, ItemT element) {
+        array.add(index, element);
+        itemAdded(element);
+    }
 
-	public ItemT remove (int index) {
-		ItemT res = array.remove(index);
-		if (res != null) itemRemoved(res);
-		return res;
-	}
+    public ItemT remove(int index) {
+        ItemT res = array.remove(index);
+        if (res != null) itemRemoved(res);
+        return res;
+    }
 
-	public boolean remove (ItemT item) {
-		boolean res = array.remove(item);
-		if (res) itemRemoved(item);
-		return res;
-	}
+    public boolean remove(ItemT item) {
+        boolean res = array.remove(item);
+        if (res) itemRemoved(item);
+        return res;
+    }
 
-	public void clear () {
-		array.clear();
-		itemsChanged();
-	}
+    public void clear() {
+        array.clear();
+        itemsChanged();
+    }
 
-	public boolean addAll (Collection<? extends ItemT> c) {
-		boolean res = array.addAll(c);
-		itemsChanged();
-		return res;
-	}
+    public boolean addAll(Collection<? extends ItemT> c) {
+        boolean res = array.addAll(c);
+        itemsChanged();
+        return res;
+    }
 
-	public boolean addAll (int index, Collection<? extends ItemT> c) {
-		boolean res = array.addAll(index, c);
-		itemsChanged();
-		return res;
-	}
+    public boolean addAll(int index, Collection<? extends ItemT> c) {
+        boolean res = array.addAll(index, c);
+        itemsChanged();
+        return res;
+    }
 
-	public boolean removeAll (Collection<?> c) {
-		boolean res = array.removeAll(c);
-		itemsChanged();
-		return res;
-	}
+    public boolean removeAll(Collection<?> c) {
+        boolean res = array.removeAll(c);
+        itemsChanged();
+        return res;
+    }
 }

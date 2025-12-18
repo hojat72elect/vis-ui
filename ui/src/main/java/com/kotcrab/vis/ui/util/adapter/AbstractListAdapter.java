@@ -45,341 +45,353 @@ import java.util.Comparator;
  * <p>
  * Enabling item selection requires calling {@link #setSelectionMode(SelectionMode)} and overriding
  * {@link #selectView(Actor)} and {@link #deselectView(Actor)}.
+ *
  * @author Kotcrab
  * @see ArrayAdapter
  * @see ArrayListAdapter
  * @since 1.0.0
  */
 public abstract class AbstractListAdapter<ItemT, ViewT extends Actor> extends CachedItemAdapter<ItemT, ViewT>
-		implements ListAdapter<ItemT> {
-	protected ListView<ItemT> view;
-	protected ListAdapterListener viewListener;
+        implements ListAdapter<ItemT> {
+    protected ListView<ItemT> view;
+    protected ListAdapterListener viewListener;
 
-	private ItemClickListener<ItemT> clickListener;
+    private ItemClickListener<ItemT> clickListener;
 
-	private SelectionMode selectionMode = SelectionMode.DISABLED;
-	private ListSelection<ItemT, ViewT> selection = new ListSelection<ItemT, ViewT>(this);
+    private SelectionMode selectionMode = SelectionMode.DISABLED;
+    private final ListSelection<ItemT, ViewT> selection = new ListSelection<ItemT, ViewT>(this);
 
-	private Comparator<ItemT> itemsComparator;
+    private Comparator<ItemT> itemsComparator;
 
-	@Override
-	public void fillTable (VisTable itemsTable) {
-		if (itemsComparator != null) sort(itemsComparator);
-		for (final ItemT item : iterable()) {
-			final ViewT view = getView(item);
-			prepareViewBeforeAddingToTable(item, view);
-			itemsTable.add(view).growX();
-			itemsTable.row();
-		}
-	}
+    @Override
+    public void fillTable(VisTable itemsTable) {
+        if (itemsComparator != null) sort(itemsComparator);
+        for (final ItemT item : iterable()) {
+            final ViewT view = getView(item);
+            prepareViewBeforeAddingToTable(item, view);
+            itemsTable.add(view).growX();
+            itemsTable.row();
+        }
+    }
 
-	protected void prepareViewBeforeAddingToTable (ItemT item, ViewT view) {
-		boolean listenerMissing = true;
-		for (EventListener listener : view.getListeners()) {
-			if (listener instanceof AbstractListAdapter.ListClickListener) {
-				listenerMissing = false;
-				break;
-			}
-		}
-		if (listenerMissing) {
-			view.setTouchable(Touchable.enabled);
-			view.addListener(new ListClickListener(view, item));
-		}
-	}
+    protected void prepareViewBeforeAddingToTable(ItemT item, ViewT view) {
+        boolean listenerMissing = true;
+        for (EventListener listener : view.getListeners()) {
+            if (listener instanceof AbstractListAdapter.ListClickListener) {
+                listenerMissing = false;
+                break;
+            }
+        }
+        if (listenerMissing) {
+            view.setTouchable(Touchable.enabled);
+            view.addListener(new ListClickListener(view, item));
+        }
+    }
 
-	@Override
-	public void setListView (ListView<ItemT> view, ListAdapterListener viewListener) {
-		if (this.view != null) throw new IllegalStateException("Adapter was already assigned to ListView");
-		this.view = view;
-		this.viewListener = viewListener;
-	}
+    @Override
+    public void setListView(ListView<ItemT> view, ListAdapterListener viewListener) {
+        if (this.view != null) throw new IllegalStateException("Adapter was already assigned to ListView");
+        this.view = view;
+        this.viewListener = viewListener;
+    }
 
-	@Override
-	public void setItemClickListener (ItemClickListener<ItemT> listener) {
-		clickListener = listener;
-	}
+    @Override
+    public void setItemClickListener(ItemClickListener<ItemT> listener) {
+        clickListener = listener;
+    }
 
-	protected void itemAdded (ItemT item) {
-		viewListener.invalidateDataSet();
-	}
+    protected void itemAdded(ItemT item) {
+        viewListener.invalidateDataSet();
+    }
 
-	protected void itemRemoved (ItemT item) {
-		selection.deselect(item);
-		getViews().remove(item);
-		viewListener.invalidateDataSet();
-	}
+    protected void itemRemoved(ItemT item) {
+        selection.deselect(item);
+        getViews().remove(item);
+        viewListener.invalidateDataSet();
+    }
 
-	/**
-	 * Notifies adapter that underlying collection has changed, ie. some items were added or removed. This does not need to
-	 * be called when only the fields of stored objects changed see {@link #itemsDataChanged()}.
-	 * <p>
-	 * WARNING: When using {@link ListView.UpdatePolicy#MANUAL} this won't cause to rebuild {@link ListView}. This method
-	 * only notifies ListView that it needs rebuilding however when using {@link ListView.UpdatePolicy#MANUAL} mode it
-	 * will be ignored.
-	 */
-	public void itemsChanged () {
-		selection.deselectAll();
-		getViews().clear();
-		viewListener.invalidateDataSet();
-	}
+    /**
+     * Notifies adapter that underlying collection has changed, ie. some items were added or removed. This does not need to
+     * be called when only the fields of stored objects changed see {@link #itemsDataChanged()}.
+     * <p>
+     * WARNING: When using {@link ListView.UpdatePolicy#MANUAL} this won't cause to rebuild {@link ListView}. This method
+     * only notifies ListView that it needs rebuilding however when using {@link ListView.UpdatePolicy#MANUAL} mode it
+     * will be ignored.
+     */
+    public void itemsChanged() {
+        selection.deselectAll();
+        getViews().clear();
+        viewListener.invalidateDataSet();
+    }
 
-	/**
-	 * Notifies adapter that data of items has changed. This means that objects fields in underlying collection has changed
-	 * and views needs updating. This must not be called if some items were removed or added from collection for that
-	 * {@link #itemsChanged()}
-	 * <p>
-	 * WARNING: When using {@link ListView.UpdatePolicy#MANUAL} this won't cause to rebuild {@link ListView}. This method
-	 * only notifies ListView that it needs rebuilding however when using {@link ListView.UpdatePolicy#MANUAL} mode it
-	 * will be ignored.
-	 */
-	public void itemsDataChanged () {
-		viewListener.invalidateDataSet();
-	}
+    /**
+     * Notifies adapter that data of items has changed. This means that objects fields in underlying collection has changed
+     * and views needs updating. This must not be called if some items were removed or added from collection for that
+     * {@link #itemsChanged()}
+     * <p>
+     * WARNING: When using {@link ListView.UpdatePolicy#MANUAL} this won't cause to rebuild {@link ListView}. This method
+     * only notifies ListView that it needs rebuilding however when using {@link ListView.UpdatePolicy#MANUAL} mode it
+     * will be ignored.
+     */
+    public void itemsDataChanged() {
+        viewListener.invalidateDataSet();
+    }
 
-	@Override
-	protected void updateView (ViewT view, ItemT item) {
+    @Override
+    protected void updateView(ViewT view, ItemT item) {
 
-	}
+    }
 
-	public SelectionMode getSelectionMode () {
-		return selectionMode;
-	}
+    public SelectionMode getSelectionMode() {
+        return selectionMode;
+    }
 
-	public void setSelectionMode (SelectionMode selectionMode) {
-		if (selectionMode == null) throw new IllegalArgumentException("selectionMode can't be null");
-		this.selectionMode = selectionMode;
-	}
+    public void setSelectionMode(SelectionMode selectionMode) {
+        if (selectionMode == null) throw new IllegalArgumentException("selectionMode can't be null");
+        this.selectionMode = selectionMode;
+    }
 
-	/**
-	 * Sets items comparator allowing to define order in which items will be displayed in list view. This will sort
-	 * underlying array before building views.
-	 * @param comparator that will be used to compare items
-	 */
-	public void setItemsSorter (Comparator<ItemT> comparator) {
-		this.itemsComparator = comparator;
-	}
+    public Comparator<ItemT> getItemsSorter() {
+        return itemsComparator;
+    }
 
-	public Comparator<ItemT> getItemsSorter () {
-		return itemsComparator;
-	}
+    /**
+     * Sets items comparator allowing to define order in which items will be displayed in list view. This will sort
+     * underlying array before building views.
+     *
+     * @param comparator that will be used to compare items
+     */
+    public void setItemsSorter(Comparator<ItemT> comparator) {
+        this.itemsComparator = comparator;
+    }
 
-	/** @return selected items, must not be modified */
-	public Array<ItemT> getSelection () {
-		return selection.getSelection();
-	}
+    /**
+     * @return selected items, must not be modified
+     */
+    public Array<ItemT> getSelection() {
+        return selection.getSelection();
+    }
 
-	public ListSelection<ItemT, ViewT> getSelectionManager () {
-		return selection;
-	}
+    public ListSelection<ItemT, ViewT> getSelectionManager() {
+        return selection;
+    }
 
-	protected void selectView (ViewT view) {
-		if (selectionMode == SelectionMode.DISABLED) return;
-		throw new UnsupportedOperationException("selectView must be implemented when `selectionMode` is different than SelectionMode.DISABLED");
-	}
+    protected void selectView(ViewT view) {
+        if (selectionMode == SelectionMode.DISABLED) return;
+        throw new UnsupportedOperationException("selectView must be implemented when `selectionMode` is different than SelectionMode.DISABLED");
+    }
 
-	protected void deselectView (ViewT view) {
-		if (selectionMode == SelectionMode.DISABLED) return;
-		throw new UnsupportedOperationException("deselectView must be implemented when `selectionMode` is different than SelectionMode.DISABLED");
-	}
+    protected void deselectView(ViewT view) {
+        if (selectionMode == SelectionMode.DISABLED) return;
+        throw new UnsupportedOperationException("deselectView must be implemented when `selectionMode` is different than SelectionMode.DISABLED");
+    }
 
-	private class ListClickListener extends ClickListener {
-		private ViewT view;
-		private ItemT item;
+    protected abstract void sort(Comparator<ItemT> comparator);
 
-		public ListClickListener (ViewT view, ItemT item) {
-			this.view = view;
-			this.item = item;
-		}
+    public enum SelectionMode {
+        /**
+         * Selecting items is not possible.
+         */
+        DISABLED,
+        /**
+         * Only one element can be selected. {@link AbstractListAdapter#selectView(Actor)} and
+         * {@link AbstractListAdapter#deselectView(Actor)} must be implemented.
+         */
+        SINGLE,
+        /**
+         * Multiple elements can be selected. {@link AbstractListAdapter#selectView(Actor)} and
+         * {@link AbstractListAdapter#deselectView(Actor)} must be implemented.
+         */
+        MULTIPLE
+    }
 
-		@Override
-		public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-			super.touchDown(event, x, y, pointer, button);
-			selection.touchDown(view, item);
-			return true;
-		}
+    public interface ListSelectionListener<ItemT, ViewT> {
+        void selected(ItemT item, ViewT view);
 
-		@Override
-		public void clicked (InputEvent event, float x, float y) {
-			if (clickListener != null) clickListener.clicked(item);
-		}
-	}
+        void deselected(ItemT item, ViewT view);
+    }
 
-	protected abstract void sort (Comparator<ItemT> comparator);
+    /**
+     * Manages selection of {@link AbstractListAdapter} items.
+     *
+     * @author Kotcrab
+     */
+    public static class ListSelection<ItemT, ViewT extends Actor> {
+        public static final int DEFAULT_KEY = -1;
+        private final AbstractListAdapter<ItemT, ViewT> adapter;
+        private int groupMultiSelectKey = DEFAULT_KEY; //shift by default
+        private int multiSelectKey = DEFAULT_KEY; //ctrl (or command on mac) by default
 
-	public enum SelectionMode {
-		/** Selecting items is not possible. */
-		DISABLED,
-		/**
-		 * Only one element can be selected. {@link AbstractListAdapter#selectView(Actor)} and
-		 * {@link AbstractListAdapter#deselectView(Actor)} must be implemented.
-		 */
-		SINGLE,
-		/**
-		 * Multiple elements can be selected. {@link AbstractListAdapter#selectView(Actor)} and
-		 * {@link AbstractListAdapter#deselectView(Actor)} must be implemented.
-		 */
-		MULTIPLE
-	}
+        private final Array<ItemT> selection = new Array<ItemT>();
 
-	/**
-	 * Manages selection of {@link AbstractListAdapter} items.
-	 * @author Kotcrab
-	 */
-	public static class ListSelection<ItemT, ViewT extends Actor> {
-		private AbstractListAdapter<ItemT, ViewT> adapter;
+        private boolean programmaticChangeEvents = true;
+        private ListSelectionListener<ItemT, ViewT> listener = new ListSelectionAdapter<ItemT, ViewT>();
 
-		public static final int DEFAULT_KEY = -1;
-		private int groupMultiSelectKey = DEFAULT_KEY; //shift by default
-		private int multiSelectKey = DEFAULT_KEY; //ctrl (or command on mac) by default
+        private ListSelection(AbstractListAdapter<ItemT, ViewT> adapter) {
+            this.adapter = adapter;
+        }
 
-		private Array<ItemT> selection = new Array<ItemT>();
+        public void select(ItemT item) {
+            select(item, adapter.getViews().get(item), true);
+        }
 
-		private boolean programmaticChangeEvents = true;
-		private ListSelectionListener<ItemT, ViewT> listener = new ListSelectionAdapter<ItemT, ViewT>();
+        void select(ItemT item, ViewT view, boolean programmaticChange) {
+            if (adapter.getSelectionMode() == SelectionMode.DISABLED) return;
+            if (adapter.getSelectionMode() == SelectionMode.SINGLE) deselectAll(programmaticChange);
+            if (adapter.getSelectionMode() == SelectionMode.MULTIPLE && selection.size >= 1 && isGroupMultiSelectKeyPressed()) {
+                selectGroup(item);
+            }
 
-		private ListSelection (AbstractListAdapter<ItemT, ViewT> adapter) {
-			this.adapter = adapter;
-		}
+            doSelect(item, view, programmaticChange);
+        }
 
-		public void select (ItemT item) {
-			select(item, adapter.getViews().get(item), true);
-		}
+        private void doSelect(ItemT item, ViewT view, boolean programmaticChange) {
+            if (!selection.contains(item, true)) {
+                adapter.selectView(view);
+                selection.add(item);
+                if (!programmaticChange || programmaticChangeEvents) listener.selected(item, view);
+            }
+        }
 
-		void select (ItemT item, ViewT view, boolean programmaticChange) {
-			if (adapter.getSelectionMode() == SelectionMode.DISABLED) return;
-			if (adapter.getSelectionMode() == SelectionMode.SINGLE) deselectAll(programmaticChange);
-			if (adapter.getSelectionMode() == SelectionMode.MULTIPLE && selection.size >= 1 && isGroupMultiSelectKeyPressed()) {
-				selectGroup(item);
-			}
+        public void deselect(ItemT item) {
+            deselect(item, adapter.getViews().get(item), true);
+        }
 
-			doSelect(item, view, programmaticChange);
-		}
+        public void deselectAll() {
+            deselectAll(true);
+        }
 
-		private void doSelect (ItemT item, ViewT view, boolean programmaticChange) {
-			if (selection.contains(item, true) == false) {
-				adapter.selectView(view);
-				selection.add(item);
-				if (programmaticChange == false || programmaticChangeEvents) listener.selected(item, view);
-			}
-		}
+        private void selectGroup(ItemT newItem) {
+            int thisSelectionIndex = adapter.indexOf(newItem);
+            int lastSelectionIndex = adapter.indexOf(selection.peek());
 
-		public void deselect (ItemT item) {
-			deselect(item, adapter.getViews().get(item), true);
-		}
+            if (lastSelectionIndex == -1) return;
 
-		public void deselectAll () {
-			deselectAll(true);
-		}
+            int start;
+            int end;
 
-		private void selectGroup (ItemT newItem) {
-			int thisSelectionIndex = adapter.indexOf(newItem);
-			int lastSelectionIndex = adapter.indexOf(selection.peek());
+            if (thisSelectionIndex > lastSelectionIndex) {
+                start = lastSelectionIndex;
+                end = thisSelectionIndex;
+            } else {
+                start = thisSelectionIndex;
+                end = lastSelectionIndex;
+            }
 
-			if (lastSelectionIndex == -1) return;
+            for (int i = start; i < end; i++) {
+                ItemT item = adapter.get(i);
+                doSelect(item, adapter.getViews().get(item), false);
+            }
+        }
 
-			int start;
-			int end;
+        void deselect(ItemT item, ViewT view, boolean programmaticChange) {
+            if (!selection.contains(item, true)) return;
+            adapter.deselectView(view);
+            selection.removeValue(item, true);
+            if (!programmaticChange || programmaticChangeEvents) listener.deselected(item, view);
+        }
 
-			if (thisSelectionIndex > lastSelectionIndex) {
-				start = lastSelectionIndex;
-				end = thisSelectionIndex;
-			} else {
-				start = thisSelectionIndex;
-				end = lastSelectionIndex;
-			}
+        void deselectAll(boolean programmaticChange) {
+            Array<ItemT> items = new Array<ItemT>(selection);
+            for (ItemT item : items) {
+                deselect(item, adapter.getViews().get(item), programmaticChange);
+            }
+        }
 
-			for (int i = start; i < end; i++) {
-				ItemT item = adapter.get(i);
-				doSelect(item, adapter.getViews().get(item), false);
-			}
-		}
+        /**
+         * @return internal array, MUST NOT be modified directly
+         */
+        public Array<ItemT> getSelection() {
+            return selection;
+        }
 
-		void deselect (ItemT item, ViewT view, boolean programmaticChange) {
-			if (selection.contains(item, true) == false) return;
-			adapter.deselectView(view);
-			selection.removeValue(item, true);
-			if (programmaticChange == false || programmaticChangeEvents) listener.deselected(item, view);
-		}
+        void touchDown(ViewT view, ItemT item) {
+            if (adapter.getSelectionMode() == SelectionMode.DISABLED) return;
 
-		void deselectAll (boolean programmaticChange) {
-			Array<ItemT> items = new Array<ItemT>(selection);
-			for (ItemT item : items) {
-				deselect(item, adapter.getViews().get(item), programmaticChange);
-			}
-		}
+            if (!isMultiSelectKeyPressed() && !isGroupMultiSelectKeyPressed()) {
+                deselectAll(false);
+            }
 
-		/** @return internal array, MUST NOT be modified directly */
-		public Array<ItemT> getSelection () {
-			return selection;
-		}
+            if (!selection.contains(item, true)) {
+                select(item, view, false);
+            } else {
+                deselect(item, view, false);
+            }
+        }
 
-		void touchDown (ViewT view, ItemT item) {
-			if (adapter.getSelectionMode() == SelectionMode.DISABLED) return;
+        public int getMultiSelectKey() {
+            return multiSelectKey;
+        }
 
-			if (isMultiSelectKeyPressed() == false && isGroupMultiSelectKeyPressed() == false) {
-				deselectAll(false);
-			}
+        /**
+         * @param multiSelectKey from {@link Keys} or {@link ListSelection#DEFAULT_KEY} to restore default
+         */
+        public void setMultiSelectKey(int multiSelectKey) {
+            this.multiSelectKey = multiSelectKey;
+        }
 
-			if (selection.contains(item, true) == false) {
-				select(item, view, false);
-			} else {
-				deselect(item, view, false);
-			}
-		}
+        public int getGroupMultiSelectKey() {
+            return groupMultiSelectKey;
+        }
 
-		public int getMultiSelectKey () {
-			return multiSelectKey;
-		}
+        /**
+         * @param groupMultiSelectKey from {@link Keys} or {@link ListSelection#DEFAULT_KEY} to restore default
+         */
+        public void setGroupMultiSelectKey(int groupMultiSelectKey) {
+            this.groupMultiSelectKey = groupMultiSelectKey;
+        }
 
-		/** @param multiSelectKey from {@link Keys} or {@link ListSelection#DEFAULT_KEY} to restore default */
-		public void setMultiSelectKey (int multiSelectKey) {
-			this.multiSelectKey = multiSelectKey;
-		}
+        public ListSelectionListener<ItemT, ViewT> getListener() {
+            return listener;
+        }
 
-		public int getGroupMultiSelectKey () {
-			return groupMultiSelectKey;
-		}
+        public void setListener(ListSelectionListener<ItemT, ViewT> listener) {
+            if (listener == null) listener = new ListSelectionAdapter<ItemT, ViewT>();
+            this.listener = listener;
+        }
 
-		/** @param groupMultiSelectKey from {@link Keys} or {@link ListSelection#DEFAULT_KEY} to restore default */
-		public void setGroupMultiSelectKey (int groupMultiSelectKey) {
-			this.groupMultiSelectKey = groupMultiSelectKey;
-		}
+        public boolean isProgrammaticChangeEvents() {
+            return programmaticChangeEvents;
+        }
 
-		public void setListener (ListSelectionListener<ItemT, ViewT> listener) {
-			if (listener == null) listener = new ListSelectionAdapter<ItemT, ViewT>();
-			this.listener = listener;
-		}
+        public void setProgrammaticChangeEvents(boolean programmaticChangeEvents) {
+            this.programmaticChangeEvents = programmaticChangeEvents;
+        }
 
-		public ListSelectionListener<ItemT, ViewT> getListener () {
-			return listener;
-		}
+        private boolean isMultiSelectKeyPressed() {
+            if (multiSelectKey == DEFAULT_KEY)
+                return UIUtils.ctrl();
+            else
+                return Gdx.input.isKeyPressed(multiSelectKey);
+        }
 
-		public boolean isProgrammaticChangeEvents () {
-			return programmaticChangeEvents;
-		}
+        private boolean isGroupMultiSelectKeyPressed() {
+            if (groupMultiSelectKey == DEFAULT_KEY)
+                return UIUtils.shift();
+            else
+                return Gdx.input.isKeyPressed(groupMultiSelectKey);
+        }
+    }
 
-		public void setProgrammaticChangeEvents (boolean programmaticChangeEvents) {
-			this.programmaticChangeEvents = programmaticChangeEvents;
-		}
+    private class ListClickListener extends ClickListener {
+        private final ViewT view;
+        private final ItemT item;
 
-		private boolean isMultiSelectKeyPressed () {
-			if (multiSelectKey == DEFAULT_KEY)
-				return UIUtils.ctrl();
-			else
-				return Gdx.input.isKeyPressed(multiSelectKey);
-		}
+        public ListClickListener(ViewT view, ItemT item) {
+            this.view = view;
+            this.item = item;
+        }
 
-		private boolean isGroupMultiSelectKeyPressed () {
-			if (groupMultiSelectKey == DEFAULT_KEY)
-				return UIUtils.shift();
-			else
-				return Gdx.input.isKeyPressed(groupMultiSelectKey);
-		}
-	}
+        @Override
+        public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+            super.touchDown(event, x, y, pointer, button);
+            selection.touchDown(view, item);
+            return true;
+        }
 
-	public interface ListSelectionListener<ItemT, ViewT> {
-		void selected (ItemT item, ViewT view);
-
-		void deselected (ItemT item, ViewT view);
-	}
+        @Override
+        public void clicked(InputEvent event, float x, float y) {
+            if (clickListener != null) clickListener.clicked(item);
+        }
+    }
 }

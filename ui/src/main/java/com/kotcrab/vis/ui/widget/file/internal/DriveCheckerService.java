@@ -28,117 +28,118 @@ import java.util.concurrent.Executors;
 
 /**
  * Used to check whether file system root is readable or writeable.
+ *
  * @author Kotcrab
  */
 public class DriveCheckerService {
-	private static DriveCheckerService instance;
+    private static DriveCheckerService instance;
 
-	private final ExecutorService pool;
+    private final ExecutorService pool;
 
-	private Array<File> readableRoots = new Array<File>();
-	private Array<File> writableRoots = new Array<File>();
+    private final Array<File> readableRoots = new Array<File>();
+    private final Array<File> writableRoots = new Array<File>();
 
-	private Map<File, ListenerSet> readableListeners = new HashMap<File, ListenerSet>();
-	private Map<File, ListenerSet> writableListeners = new HashMap<File, ListenerSet>();
+    private final Map<File, ListenerSet> readableListeners = new HashMap<File, ListenerSet>();
+    private final Map<File, ListenerSet> writableListeners = new HashMap<File, ListenerSet>();
 
-	public static synchronized DriveCheckerService getInstance () {
-		if (instance == null) instance = new DriveCheckerService();
-		return instance;
-	}
+    public DriveCheckerService() {
+        pool = Executors.newFixedThreadPool(3, new ServiceThreadFactory("DriveStatusChecker"));
 
-	public DriveCheckerService () {
-		pool = Executors.newFixedThreadPool(3, new ServiceThreadFactory("DriveStatusChecker"));
+        File[] roots = File.listRoots();
 
-		File[] roots = File.listRoots();
+        for (File root : roots) {
+            processRoot(root);
+        }
+    }
 
-		for (File root : roots) {
-			processRoot(root);
-		}
-	}
+    public static synchronized DriveCheckerService getInstance() {
+        if (instance == null) instance = new DriveCheckerService();
+        return instance;
+    }
 
-	private void processRoot (final File root) {
-		pool.execute(new Runnable() {
-			@Override
-			public void run () {
-				processResults(root, root.canRead(), root.canWrite());
-			}
-		});
-	}
+    private void processRoot(final File root) {
+        pool.execute(new Runnable() {
+            @Override
+            public void run() {
+                processResults(root, root.canRead(), root.canWrite());
+            }
+        });
+    }
 
-	private void processResults (final File root, final boolean readable, final boolean writable) {
-		Gdx.app.postRunnable(new Runnable() {
-			@Override
-			public void run () {
-				if (readable) {
-					readableRoots.add(root);
-					ListenerSet set = readableListeners.get(root);
-					if (set != null) {
-						set.notifyListeners(root, RootMode.READABLE);
-					}
-				}
+    private void processResults(final File root, final boolean readable, final boolean writable) {
+        Gdx.app.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                if (readable) {
+                    readableRoots.add(root);
+                    ListenerSet set = readableListeners.get(root);
+                    if (set != null) {
+                        set.notifyListeners(root, RootMode.READABLE);
+                    }
+                }
 
-				if (writable) {
-					writableRoots.add(root);
-					ListenerSet set = writableListeners.get(root);
-					if (set != null) {
-						set.notifyListeners(root, RootMode.WRITABLE);
-					}
-				}
-			}
-		});
-	}
+                if (writable) {
+                    writableRoots.add(root);
+                    ListenerSet set = writableListeners.get(root);
+                    if (set != null) {
+                        set.notifyListeners(root, RootMode.WRITABLE);
+                    }
+                }
+            }
+        });
+    }
 
-	public void addListener (File root, RootMode mode, DriveCheckerListener listener) {
-		switch (mode) {
-			case READABLE:
-				addListener(root, mode, listener, readableRoots, readableListeners);
-				break;
-			case WRITABLE:
-				addListener(root, mode, listener, writableRoots, writableListeners);
-				break;
-		}
-	}
+    public void addListener(File root, RootMode mode, DriveCheckerListener listener) {
+        switch (mode) {
+            case READABLE:
+                addListener(root, mode, listener, readableRoots, readableListeners);
+                break;
+            case WRITABLE:
+                addListener(root, mode, listener, writableRoots, writableListeners);
+                break;
+        }
+    }
 
-	private void addListener (File root, RootMode mode, DriveCheckerListener listener, Array<File> cachedRoots, Map<File, ListenerSet> listeners) {
-		if (cachedRoots.contains(root, false)) {
-			listener.rootMode(root, mode);
-			return;
-		}
+    private void addListener(File root, RootMode mode, DriveCheckerListener listener, Array<File> cachedRoots, Map<File, ListenerSet> listeners) {
+        if (cachedRoots.contains(root, false)) {
+            listener.rootMode(root, mode);
+            return;
+        }
 
-		ListenerSet set = listeners.get(root);
+        ListenerSet set = listeners.get(root);
 
-		if (set == null) {
-			set = new ListenerSet();
-			listeners.put(root, set);
-		}
+        if (set == null) {
+            set = new ListenerSet();
+            listeners.put(root, set);
+        }
 
-		set.add(listener);
-		processRoot(root);
-	}
+        set.add(listener);
+        processRoot(root);
+    }
 
-	public enum RootMode {
-		READABLE, WRITABLE
-	}
+    public enum RootMode {
+        READABLE, WRITABLE
+    }
 
-	public interface DriveCheckerListener {
-		void rootMode (File root, RootMode mode);
-	}
+    public interface DriveCheckerListener {
+        void rootMode(File root, RootMode mode);
+    }
 
-	public class ListenerSet {
-		Array<DriveCheckerListener> list = new Array<DriveCheckerListener>();
+    public class ListenerSet {
+        Array<DriveCheckerListener> list = new Array<DriveCheckerListener>();
 
-		public void add (DriveCheckerListener listener) {
-			list.add(listener);
-		}
+        public void add(DriveCheckerListener listener) {
+            list.add(listener);
+        }
 
-		public void notifyListeners (File root, RootMode mode) {
-			Iterator<DriveCheckerListener> it = list.iterator();
+        public void notifyListeners(File root, RootMode mode) {
+            Iterator<DriveCheckerListener> it = list.iterator();
 
-			while (it.hasNext()) {
-				DriveCheckerListener listener = it.next();
-				listener.rootMode(root, mode);
-				it.remove();
-			}
-		}
-	}
+            while (it.hasNext()) {
+                DriveCheckerListener listener = it.next();
+                listener.rootMode(root, mode);
+                it.remove();
+            }
+        }
+    }
 }

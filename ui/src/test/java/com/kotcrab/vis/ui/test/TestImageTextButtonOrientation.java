@@ -20,7 +20,7 @@ public class TestImageTextButtonOrientation extends VisWindow {
         centerWindow();
     }
 
-    private void addVisWidgets () {
+    private void addVisWidgets() {
         Drawable icon = VisUI.getSkin().getDrawable("icon-folder");
 
         VisImageTextButton right = new VisImageTextButton("right", icon);

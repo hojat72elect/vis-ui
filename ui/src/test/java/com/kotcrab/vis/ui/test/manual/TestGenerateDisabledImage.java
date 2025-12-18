@@ -25,36 +25,36 @@ import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisWindow;
 
 public class TestGenerateDisabledImage extends VisWindow {
-	public TestGenerateDisabledImage () {
-		super("generate disabled image");
+    public TestGenerateDisabledImage() {
+        super("generate disabled image");
 
-		TableUtils.setSpacingDefaults(this);
-		columnDefaults(0).left();
+        TableUtils.setSpacingDefaults(this);
+        columnDefaults(0).left();
 
-		addVisWidgets();
+        addVisWidgets();
 
-		setSize(300, 150);
-		centerWindow();
-	}
+        setSize(300, 150);
+        centerWindow();
+    }
 
-	private void addVisWidgets () {
-		Drawable icon = VisUI.getSkin().getDrawable("icon-folder");
-		VisImageButton normal = new VisImageButton(icon);
-		VisImageButton disabled = new VisImageButton(icon);
-		disabled.setGenerateDisabledImage(true);
-		disabled.setDisabled(true);
-		add(new VisLabel("VisImageButton normal"));
-		add(normal).row();
-		add(new VisLabel("VisImageButton disabled"));
-		add(disabled).row();
+    private void addVisWidgets() {
+        Drawable icon = VisUI.getSkin().getDrawable("icon-folder");
+        VisImageButton normal = new VisImageButton(icon);
+        VisImageButton disabled = new VisImageButton(icon);
+        disabled.setGenerateDisabledImage(true);
+        disabled.setDisabled(true);
+        add(new VisLabel("VisImageButton normal"));
+        add(normal).row();
+        add(new VisLabel("VisImageButton disabled"));
+        add(disabled).row();
 
-		VisImageTextButton normalText = new VisImageTextButton("text", icon);
-		VisImageTextButton disabledText = new VisImageTextButton("text", icon);
-		disabledText.setGenerateDisabledImage(true);
-		disabledText.setDisabled(true);
-		add(new VisLabel("VisImageTextButton normal"));
-		add(normalText).row();
-		add(new VisLabel("VisImageTextButton disabled"));
-		add(disabledText).padBottom(3f).row();
-	}
+        VisImageTextButton normalText = new VisImageTextButton("text", icon);
+        VisImageTextButton disabledText = new VisImageTextButton("text", icon);
+        disabledText.setGenerateDisabledImage(true);
+        disabledText.setDisabled(true);
+        add(new VisLabel("VisImageTextButton normal"));
+        add(normalText).row();
+        add(new VisLabel("VisImageTextButton disabled"));
+        add(disabledText).padBottom(3f).row();
+    }
 }

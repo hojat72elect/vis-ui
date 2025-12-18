@@ -28,42 +28,49 @@ import com.kotcrab.vis.ui.building.utilities.CellWidget;
  * <p>
  * Beside VERTICAL and HORIZONTAL, there's also grid layout available. Since it's customizable, an instance of
  * grid table layout must be manually initiated using grid() method.
+ *
  * @author MJ
  */
 public enum TableLayout implements ActorLayout {
-	/** Converts passed widgets into a single column. */
-	VERTICAL {
-		@Override
-		public Actor convertToActor (final CellWidget<?>... widgets) {
-			return convertToTable(new OneColumnTableBuilder(), widgets);
-		}
-	},
-	/** Converts passed widgets into a single row. */
-	HORIZONTAL {
-		@Override
-		public Actor convertToActor (final CellWidget<?>... widgets) {
-			return convertToTable(new OneRowTableBuilder(), widgets);
-		}
-	};
+    /**
+     * Converts passed widgets into a single column.
+     */
+    VERTICAL {
+        @Override
+        public Actor convertToActor(final CellWidget<?>... widgets) {
+            return convertToTable(new OneColumnTableBuilder(), widgets);
+        }
+    },
+    /**
+     * Converts passed widgets into a single row.
+     */
+    HORIZONTAL {
+        @Override
+        public Actor convertToActor(final CellWidget<?>... widgets) {
+            return convertToTable(new OneRowTableBuilder(), widgets);
+        }
+    };
 
-	@Override
-	public Actor convertToActor (final Actor... widgets) {
-		return convertToActor(CellWidget.wrap(widgets));
-	}
+    /**
+     * Utility method. Appends all widgets into the passed builder and creates a table with no additional
+     * settings.
+     */
+    public static Actor convertToTable(final TableBuilder usingBuilder, final CellWidget<?>... widgets) {
+        for (final CellWidget<?> widget : widgets) {
+            usingBuilder.append(widget);
+        }
+        return usingBuilder.build();
+    }
 
-	/**
-	 * Utility method. Appends all widgets into the passed builder and creates a table with no additional
-	 * settings.
-	 */
-	public static Actor convertToTable (final TableBuilder usingBuilder, final CellWidget<?>... widgets) {
-		for (final CellWidget<?> widget : widgets) {
-			usingBuilder.append(widget);
-		}
-		return usingBuilder.build();
-	}
+    /**
+     * @return a new instance of GridTableLayout that creates tables as grids with the specified row size.
+     */
+    public static GridTableLayout grid(final int rowSize) {
+        return GridTableLayout.withRowSize(rowSize);
+    }
 
-	/** @return a new instance of GridTableLayout that creates tables as grids with the specified row size. */
-	public static GridTableLayout grid (final int rowSize) {
-		return GridTableLayout.withRowSize(rowSize);
-	}
+    @Override
+    public Actor convertToActor(final Actor... widgets) {
+        return convertToActor(CellWidget.wrap(widgets));
+    }
 }

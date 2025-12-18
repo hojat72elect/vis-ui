@@ -27,79 +27,80 @@ import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-/** @author Kotcrab */
+/**
+ * @author Kotcrab
+ */
 public class IncludeLoader {
-	private File cacheFolder = new File(USL.CACHE_FOLDER_PATH);
-	private File tmpFolder = new File(USL.TMP_FOLDER_PATH);
+    private final File cacheFolder = new File(USL.CACHE_FOLDER_PATH);
+    private final File tmpFolder = new File(USL.TMP_FOLDER_PATH);
 
-	private ArrayList<String> includeSources = new ArrayList<>();
+    private final ArrayList<String> includeSources = new ArrayList<>();
 
-	public IncludeLoader () {
-		cacheFolder.mkdirs();
-		tmpFolder.mkdirs();
+    public IncludeLoader() {
+        cacheFolder.mkdirs();
+        tmpFolder.mkdirs();
 
-		String additionalIncludeDir = System.getProperty("usl.include.path");
-		if (additionalIncludeDir != null) includeSources.add(additionalIncludeDir);
-		includeSources.add("http://apps.kotcrab.com/vis/usl/");
-		includeSources.add("https://raw.githubusercontent.com/kotcrab/vis-ui/master/usl/styles/");
-	}
+        String additionalIncludeDir = System.getProperty("usl.include.path");
+        if (additionalIncludeDir != null) includeSources.add(additionalIncludeDir);
+        includeSources.add("http://apps.kotcrab.com/vis/usl/");
+        includeSources.add("https://raw.githubusercontent.com/kotcrab/vis-ui/master/usl/styles/");
+    }
 
-	public String loadInclude (String includeName) {
-		return fileToString(loadIncludeFile(includeName));
-	}
+    public String loadInclude(String includeName) {
+        return fileToString(loadIncludeFile(includeName));
+    }
 
-	private File loadIncludeFile (String includeName) {
-		try {
-			includeName += ".usl";
-			File cacheFile = new File(cacheFolder, includeName);
-			File tmpFile = new File(tmpFolder, includeName);
-			if (cacheFile.exists()) return cacheFile;
+    private File loadIncludeFile(String includeName) {
+        try {
+            includeName += ".usl";
+            File cacheFile = new File(cacheFolder, includeName);
+            File tmpFile = new File(tmpFolder, includeName);
+            if (cacheFile.exists()) return cacheFile;
 
-			boolean snapshot = includeName.endsWith("-SNAPSHOT.usl");
+            boolean snapshot = includeName.endsWith("-SNAPSHOT.usl");
 
-			for (String includeSource : includeSources) {
-				if (includeSource.startsWith("https://") || includeSource.startsWith("http://")) {
-					URL url = new URL(includeSource + includeName);
+            for (String includeSource : includeSources) {
+                if (includeSource.startsWith("https://") || includeSource.startsWith("http://")) {
+                    URL url = new URL(includeSource + includeName);
 
-					HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-					final int responseCode = connection.getResponseCode();
-					if (responseCode != 200) {
-						continue;
-					}
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    final int responseCode = connection.getResponseCode();
+                    if (responseCode != 200) {
+                        continue;
+                    }
 
-					System.out.println("Download include file " + includeSource + includeName + "...");
-					ReadableByteChannel rbc = Channels.newChannel(url.openStream());
-					FileOutputStream fos = new FileOutputStream(snapshot ? tmpFile : cacheFile);
-					fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-					return snapshot ? tmpFile : cacheFile;
+                    System.out.println("Download include file " + includeSource + includeName + "...");
+                    ReadableByteChannel rbc = Channels.newChannel(url.openStream());
+                    FileOutputStream fos = new FileOutputStream(snapshot ? tmpFile : cacheFile);
+                    fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+                    return snapshot ? tmpFile : cacheFile;
+                } else {
+                    File localFile = new File(includeSource, includeName);
+                    if (localFile.exists()) return localFile;
+                }
+            }
 
-				} else {
-					File localFile = new File(includeSource, includeName);
-					if (localFile.exists()) return localFile;
-				}
-			}
+            StringBuilder exceptionMsg = new StringBuilder();
+            exceptionMsg.append("Could not find '").append(includeName).append("' include. Searched in the following locations:\n");
+            for (String includeSource : includeSources) {
+                exceptionMsg.append("\t").append(includeSource + includeName).append("\n");
+            }
+            throw new IllegalStateException(exceptionMsg.toString());
+        } catch (IOException e) {
+            throw new IllegalStateException("Error during include file downloading", e);
+        }
+    }
 
-			StringBuilder exceptionMsg = new StringBuilder();
-			exceptionMsg.append("Could not find '").append(includeName).append("' include. Searched in the following locations:\n");
-			for (String includeSource : includeSources) {
-				exceptionMsg.append("\t").append(includeSource + includeName).append("\n");
-			}
-			throw new IllegalStateException(exceptionMsg.toString());
-		} catch (IOException e) {
-			throw new IllegalStateException("Error during include file downloading", e);
-		}
-	}
+    private String fileToString(File file) {
+        try {
+            Scanner s = new Scanner(file).useDelimiter("\\A");
+            return s.hasNext() ? s.next() : "";
+        } catch (FileNotFoundException e) {
+            throw new IllegalStateException("Error reading file", e);
+        }
+    }
 
-	private String fileToString (File file) {
-		try {
-			Scanner s = new Scanner(file).useDelimiter("\\A");
-			return s.hasNext() ? s.next() : "";
-		} catch (FileNotFoundException e) {
-			throw new IllegalStateException("Error reading file", e);
-		}
-	}
-
-	public void addIncludeSource (String path) {
-		includeSources.add(0, path);
-	}
+    public void addIncludeSource(String path) {
+        includeSources.add(0, path);
+    }
 }

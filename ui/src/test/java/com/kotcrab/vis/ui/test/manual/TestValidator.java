@@ -23,18 +23,17 @@ import com.kotcrab.vis.ui.widget.VisWindow;
 
 public class TestValidator extends VisWindow {
 
-	public TestValidator () {
-		super("input validator (float number)");
+    public TestValidator() {
+        super("input validator (float number)");
 
-		TableUtils.setSpacingDefaults(this);
-		columnDefaults(0).left();
+        TableUtils.setSpacingDefaults(this);
+        columnDefaults(0).left();
 
-		VisValidatableTextField textField = new VisValidatableTextField(Validators.FLOATS);
+        VisValidatableTextField textField = new VisValidatableTextField(Validators.FLOATS);
 
-		add(textField);
+        add(textField);
 
-		pack();
-		setPosition(600, 18);
-	}
-
+        pack();
+        setPosition(600, 18);
+    }
 }

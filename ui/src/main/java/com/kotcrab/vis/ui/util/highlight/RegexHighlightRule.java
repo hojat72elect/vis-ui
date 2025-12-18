@@ -25,23 +25,24 @@ import java.util.regex.Pattern;
 
 /**
  * Highlighter rule using regex to detect text matches. Regexes and thus this rule can't be used on GWT.
+ *
  * @author Kotcrab
  * @since 1.1.2
  */
 public class RegexHighlightRule implements HighlightRule {
-	private Color color;
-	private Pattern pattern;
+    private final Color color;
+    private final Pattern pattern;
 
-	public RegexHighlightRule (Color color, String regex) {
-		this.color = color;
-		pattern = Pattern.compile(regex);
-	}
+    public RegexHighlightRule(Color color, String regex) {
+        this.color = color;
+        pattern = Pattern.compile(regex);
+    }
 
-	@Override
-	public void process (HighlightTextArea textArea, Array<Highlight> highlights) {
-		Matcher matcher = pattern.matcher(textArea.getText());
-		while (matcher.find()) {
-			highlights.add(new Highlight(color, matcher.start(), matcher.end()));
-		}
-	}
+    @Override
+    public void process(HighlightTextArea textArea, Array<Highlight> highlights) {
+        Matcher matcher = pattern.matcher(textArea.getText());
+        while (matcher.find()) {
+            highlights.add(new Highlight(color, matcher.start(), matcher.end()));
+        }
+    }
 }

@@ -36,107 +36,116 @@ import com.kotcrab.vis.ui.widget.VisWindow;
  * <p>
  * If you want further customization and modify other aspects of toast (such as close button) override
  * {@link #createMainTable()}.
+ *
  * @author Kotcrab
  * @see MessageToast
  * @see ToastTable
  * @since 1.1.0
  */
 public class Toast {
-	private ToastStyle style;
+    private final ToastStyle style;
 
-	private ToastManager toastManager;
+    private ToastManager toastManager;
 
-	private Table mainTable;
-	private Table contentTable;
+    private Table mainTable;
+    private final Table contentTable;
 
-	/** @param content table content, preferably instance of {@link ToastTable} */
-	public Toast (Table content) {
-		this("default", content);
-	}
+    /**
+     * @param content table content, preferably instance of {@link ToastTable}
+     */
+    public Toast(Table content) {
+        this("default", content);
+    }
 
-	/** @param content table content, preferably instance of {@link ToastTable} */
-	public Toast (String styleName, Table content) {
-		this(VisUI.getSkin().get(styleName, ToastStyle.class), content);
-	}
+    /**
+     * @param content table content, preferably instance of {@link ToastTable}
+     */
+    public Toast(String styleName, Table content) {
+        this(VisUI.getSkin().get(styleName, ToastStyle.class), content);
+    }
 
-	/** @param content table content, preferably instance of {@link ToastTable} */
-	public Toast (ToastStyle style, Table content) {
-		this.style = style;
-		this.contentTable = content;
-		if (content instanceof ToastTable) {
-			((ToastTable) content).setToast(this);
-		}
-		createMainTable();
-	}
+    /**
+     * @param content table content, preferably instance of {@link ToastTable}
+     */
+    public Toast(ToastStyle style, Table content) {
+        this.style = style;
+        this.contentTable = content;
+        if (content instanceof ToastTable) {
+            ((ToastTable) content).setToast(this);
+        }
+        createMainTable();
+    }
 
-	protected void createMainTable () {
-		mainTable = new VisTable();
-		mainTable.setBackground(style.background);
+    protected void createMainTable() {
+        mainTable = new VisTable();
+        mainTable.setBackground(style.background);
 
-		VisImageButton closeButton = new VisImageButton(style.closeButtonStyle);
-		closeButton.addListener(new ChangeListener() {
-			@Override
-			public void changed (ChangeEvent event, Actor actor) {
-				close();
-			}
-		});
+        VisImageButton closeButton = new VisImageButton(style.closeButtonStyle);
+        closeButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                close();
+            }
+        });
 
-		mainTable.add(contentTable).pad(3).fill().expand();
-		mainTable.add(closeButton).top();
-	}
+        mainTable.add(contentTable).pad(3).fill().expand();
+        mainTable.add(closeButton).top();
+    }
 
-	/** Called when close button was pressed by default call {@link #fadeOut()} */
-	protected void close () {
-		fadeOut();
-	}
+    /**
+     * Called when close button was pressed by default call {@link #fadeOut()}
+     */
+    protected void close() {
+        fadeOut();
+    }
 
-	public void fadeOut () {
-		mainTable.addAction(Actions.sequence(Actions.fadeOut(VisWindow.FADE_TIME, Interpolation.fade), new Action() {
-			@Override
-			public boolean act (float delta) {
-				toastManager.remove(Toast.this);
-				return true;
-			}
-		}));
-	}
+    public void fadeOut() {
+        mainTable.addAction(Actions.sequence(Actions.fadeOut(VisWindow.FADE_TIME, Interpolation.fade), new Action() {
+            @Override
+            public boolean act(float delta) {
+                toastManager.remove(Toast.this);
+                return true;
+            }
+        }));
+    }
 
-	public Table fadeIn () {
-		mainTable.setColor(1, 1, 1, 0);
-		mainTable.addAction(Actions.fadeIn(VisWindow.FADE_TIME, Interpolation.fade));
-		return mainTable;
-	}
+    public Table fadeIn() {
+        mainTable.setColor(1, 1, 1, 0);
+        mainTable.addAction(Actions.fadeIn(VisWindow.FADE_TIME, Interpolation.fade));
+        return mainTable;
+    }
 
-	public Table getContentTable () {
-		return contentTable;
-	}
+    public Table getContentTable() {
+        return contentTable;
+    }
 
-	public Table getMainTable () {
-		return mainTable;
-	}
+    public Table getMainTable() {
+        return mainTable;
+    }
 
-	public void setToastManager (ToastManager toastManager) {
-		this.toastManager = toastManager;
-	}
+    public ToastManager getToastManager() {
+        return toastManager;
+    }
 
-	public ToastManager getToastManager () {
-		return toastManager;
-	}
+    public void setToastManager(ToastManager toastManager) {
+        this.toastManager = toastManager;
+    }
 
-	public static class ToastStyle {
-		public Drawable background;
-		public VisImageButtonStyle closeButtonStyle;
+    public static class ToastStyle {
+        public Drawable background;
+        public VisImageButtonStyle closeButtonStyle;
 
-		public ToastStyle () {
-		}
+        public ToastStyle() {
+        }
 
-		public ToastStyle (ToastStyle style) {
-			this.background = style.background;
-			this.closeButtonStyle = style.closeButtonStyle;
-		}
+        public ToastStyle(ToastStyle style) {
+            this.background = style.background;
+            this.closeButtonStyle = style.closeButtonStyle;
+        }
 
-		public ToastStyle (Drawable background, VisImageButtonStyle closeButtonStyle) {
-			this.background = background;
-			this.closeButtonStyle = closeButtonStyle;
-		}
-	}
+        public ToastStyle(Drawable background, VisImageButtonStyle closeButtonStyle) {
+            this.background = background;
+            this.closeButtonStyle = closeButtonStyle;
+        }
+    }
 }

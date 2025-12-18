@@ -21,19 +21,20 @@ import com.kotcrab.vis.ui.VisUI;
 
 /**
  * Compatible with {@link Slider}. Does not provide additional features.
+ *
  * @author Kotcrab
  * @see Slider
  */
 public class VisSlider extends Slider {
-	public VisSlider (float min, float max, float stepSize, boolean vertical) {
-		super(min, max, stepSize, vertical, VisUI.getSkin());
-	}
+    public VisSlider(float min, float max, float stepSize, boolean vertical) {
+        super(min, max, stepSize, vertical, VisUI.getSkin());
+    }
 
-	public VisSlider (float min, float max, float stepSize, boolean vertical, String styleName) {
-		super(min, max, stepSize, vertical, VisUI.getSkin(), styleName);
-	}
+    public VisSlider(float min, float max, float stepSize, boolean vertical, String styleName) {
+        super(min, max, stepSize, vertical, VisUI.getSkin(), styleName);
+    }
 
-	public VisSlider (float min, float max, float stepSize, boolean vertical, SliderStyle style) {
-		super(min, max, stepSize, vertical, style);
-	}
+    public VisSlider(float min, float max, float stepSize, boolean vertical, SliderStyle style) {
+        super(min, max, stepSize, vertical, style);
+    }
 }

@@ -29,160 +29,165 @@ import com.kotcrab.vis.ui.util.OsUtils;
  * platform dependent order. Built-in orders support Windows, Mac, and Linux. When no platform matches ButtonBar
  * defaults to Linux order.
  * User may specify custom order, see {@link ButtonType} for buttons ids.
+ *
  * @author Kotcrab
  * @since 1.0.0
  */
 public class ButtonBar {
-	public static final String WINDOWS_ORDER = "L H BEF YNOCA R";
-	public static final String OSX_ORDER = "L H BEF NYCOA R";
-	public static final String LINUX_ORDER = "L H NYACBEFO R";
+    public static final String WINDOWS_ORDER = "L H BEF YNOCA R";
+    public static final String OSX_ORDER = "L H BEF NYCOA R";
+    public static final String LINUX_ORDER = "L H NYACBEFO R";
 
-	private Sizes sizes;
+    private final Sizes sizes;
 
-	private ObjectMap<Character, Button> buttons = new ObjectMap<Character, Button>();
+    private final ObjectMap<Character, Button> buttons = new ObjectMap<Character, Button>();
 
-	private boolean ignoreSpacing;
-	private String order;
+    private boolean ignoreSpacing;
+    private String order;
 
-	public ButtonBar () {
-		this(VisUI.getSizes(), getDefaultOrder());
-	}
+    public ButtonBar() {
+        this(VisUI.getSizes(), getDefaultOrder());
+    }
 
-	public ButtonBar (String order) {
-		this(VisUI.getSizes(), order);
-	}
+    public ButtonBar(String order) {
+        this(VisUI.getSizes(), order);
+    }
 
-	public ButtonBar (Sizes sizes) {
-		this(sizes, getDefaultOrder());
-	}
+    public ButtonBar(Sizes sizes) {
+        this(sizes, getDefaultOrder());
+    }
 
-	public ButtonBar (Sizes sizes, String order) {
-		if (sizes == null) throw new IllegalArgumentException("sizes can't be null");
-		this.sizes = sizes;
-		setOrder(order);
-	}
+    public ButtonBar(Sizes sizes, String order) {
+        if (sizes == null) throw new IllegalArgumentException("sizes can't be null");
+        this.sizes = sizes;
+        setOrder(order);
+    }
 
-	private static String getDefaultOrder () {
-		if (OsUtils.isWindows()) {
-			return WINDOWS_ORDER;
-		} else if (OsUtils.isMac()) {
-			return OSX_ORDER;
-		} else //default to linux order
-			return LINUX_ORDER;
-	}
+    private static String getDefaultOrder() {
+        if (OsUtils.isWindows()) {
+            return WINDOWS_ORDER;
+        } else if (OsUtils.isMac()) {
+            return OSX_ORDER;
+        } else //default to linux order
+            return LINUX_ORDER;
+    }
 
-	public boolean isIgnoreSpacing () {
-		return ignoreSpacing;
-	}
+    public boolean isIgnoreSpacing() {
+        return ignoreSpacing;
+    }
 
-	/** @param ignoreSpacing if true spacing symbols in order will be ignored */
-	public void setIgnoreSpacing (boolean ignoreSpacing) {
-		this.ignoreSpacing = ignoreSpacing;
-	}
+    /**
+     * @param ignoreSpacing if true spacing symbols in order will be ignored
+     */
+    public void setIgnoreSpacing(boolean ignoreSpacing) {
+        this.ignoreSpacing = ignoreSpacing;
+    }
 
-	public String getOrder () {
-		return order;
-	}
+    public String getOrder() {
+        return order;
+    }
 
-	public void setOrder (String order) {
-		if (order == null) throw new IllegalArgumentException("order can't be null");
-		this.order = order;
-	}
+    public void setOrder(String order) {
+        if (order == null) throw new IllegalArgumentException("order can't be null");
+        this.order = order;
+    }
 
-	public void setButton (ButtonType type, ChangeListener listener) {
-		setButton(type, type.getText(), listener);
-	}
+    public void setButton(ButtonType type, ChangeListener listener) {
+        setButton(type, type.getText(), listener);
+    }
 
-	public void setButton (ButtonType type, String text, ChangeListener listener) {
-		setButton(type, new VisTextButton(text), listener);
-	}
+    public void setButton(ButtonType type, String text, ChangeListener listener) {
+        setButton(type, new VisTextButton(text), listener);
+    }
 
-	public void setButton (ButtonType type, Button button) {
-		setButton(type, button, null);
-	}
+    public void setButton(ButtonType type, Button button) {
+        setButton(type, button, null);
+    }
 
-	public void setButton (ButtonType type, Button button, ChangeListener listener) {
-		if (type == null) throw new IllegalArgumentException("type can't be null");
-		if (button == null) throw new IllegalArgumentException("button can't be null");
-		if (buttons.containsKey(type.id)) buttons.remove(type.id);
-		buttons.put(type.id, button);
-		if (listener != null) button.addListener(listener);
-	}
+    public void setButton(ButtonType type, Button button, ChangeListener listener) {
+        if (type == null) throw new IllegalArgumentException("type can't be null");
+        if (button == null) throw new IllegalArgumentException("button can't be null");
+        if (buttons.containsKey(type.id)) buttons.remove(type.id);
+        buttons.put(type.id, button);
+        if (listener != null) button.addListener(listener);
+    }
 
-	public Button getButton (ButtonType type) {
-		return buttons.get(type.getId());
-	}
+    public Button getButton(ButtonType type) {
+        return buttons.get(type.getId());
+    }
 
-	/**
-	 * @return stored button casted to {@link VisTextButton}. Will throw {@link ClassCastException} in case stored button
-	 * type is wrong. This may be safely used when button was created using {@link #setButton(ButtonType, String, ChangeListener)}.
-	 */
-	public VisTextButton getTextButton (ButtonType type) {
-		return (VisTextButton) getButton(type);
-	}
+    /**
+     * @return stored button casted to {@link VisTextButton}. Will throw {@link ClassCastException} in case stored button
+     * type is wrong. This may be safely used when button was created using {@link #setButton(ButtonType, String, ChangeListener)}.
+     */
+    public VisTextButton getTextButton(ButtonType type) {
+        return (VisTextButton) getButton(type);
+    }
 
-	/**
-	 * Builds and returns {@link VisTable} containing buttons in platform dependant order. Note that calling this multiple
-	 * times will remove buttons from previous tables.
-	 */
-	public VisTable createTable () {
-		VisTable table = new VisTable(true);
+    /**
+     * Builds and returns {@link VisTable} containing buttons in platform dependant order. Note that calling this multiple
+     * times will remove buttons from previous tables.
+     */
+    public VisTable createTable() {
+        VisTable table = new VisTable(true);
 
-		table.left();
+        table.left();
 
-		boolean spacingValid = false;
-		for (int i = 0; i < order.length(); i++) {
-			char ch = order.charAt(i);
+        boolean spacingValid = false;
+        for (int i = 0; i < order.length(); i++) {
+            char ch = order.charAt(i);
 
-			if (ignoreSpacing == false && ch == ' ' && spacingValid) {
-				table.add().width(sizes.buttonBarSpacing);
-				spacingValid = false;
-			}
+            if (!ignoreSpacing && ch == ' ' && spacingValid) {
+                table.add().width(sizes.buttonBarSpacing);
+                spacingValid = false;
+            }
 
-			Button button = buttons.get(ch);
+            Button button = buttons.get(ch);
 
-			if (button != null) {
-				table.add(button);
-				spacingValid = true;
-			}
-		}
+            if (button != null) {
+                table.add(button);
+                spacingValid = true;
+            }
+        }
 
-		return table;
-	}
+        return table;
+    }
 
-	/** Defines possible button types for {@link ButtonBar} */
-	public enum ButtonType {
-		LEFT("left", 'L'),
-		RIGHT("right", 'R'),
-		HELP("help", 'H'),
-		NO("no", 'N'),
-		YES("yes", 'Y'),
-		CANCEL("cancel", 'C'),
-		BACK("back", 'B'),
-		NEXT("next", 'E'),
-		APPLY("apply", 'A'),
-		FINISH("finish", 'F'),
-		OK("ok", 'O');
+    /**
+     * Defines possible button types for {@link ButtonBar}
+     */
+    public enum ButtonType {
+        LEFT("left", 'L'),
+        RIGHT("right", 'R'),
+        HELP("help", 'H'),
+        NO("no", 'N'),
+        YES("yes", 'Y'),
+        CANCEL("cancel", 'C'),
+        BACK("back", 'B'),
+        NEXT("next", 'E'),
+        APPLY("apply", 'A'),
+        FINISH("finish", 'F'),
+        OK("ok", 'O');
 
-		private final String key;
-		private final char id;
+        private final String key;
+        private final char id;
 
-		ButtonType (String key, char id) {
-			this.key = key;
-			this.id = id;
-		}
+        ButtonType(String key, char id) {
+            this.key = key;
+            this.id = id;
+        }
 
-		public char getId () {
-			return id;
-		}
+        public char getId() {
+            return id;
+        }
 
-		public final String getText () {
-			return Locales.getButtonBarBundle().get(key);
-		}
+        public final String getText() {
+            return Locales.getButtonBarBundle().get(key);
+        }
 
-		@Override
-		public final String toString () {
-			return getText();
-		}
-	}
+        @Override
+        public final String toString() {
+            return getText();
+        }
+    }
 }

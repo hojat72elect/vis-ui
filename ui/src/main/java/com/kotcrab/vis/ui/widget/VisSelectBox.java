@@ -25,33 +25,33 @@ import com.kotcrab.vis.ui.VisUI;
 /**
  * Compatible with {@link SelectBox}. Does not provide additional features however for proper VisUI focus management VisSelectBox
  * should be always preferred.
+ *
  * @author Kotcrab
  * @see SelectBox
  */
 public class VisSelectBox<T> extends SelectBox<T> {
-	public VisSelectBox (SelectBoxStyle style) {
-		super(style);
-		init();
-	}
+    public VisSelectBox(SelectBoxStyle style) {
+        super(style);
+        init();
+    }
 
-	public VisSelectBox (String styleName) {
-		super(VisUI.getSkin(), styleName);
-		init();
-	}
+    public VisSelectBox(String styleName) {
+        super(VisUI.getSkin(), styleName);
+        init();
+    }
 
-	public VisSelectBox () {
-		super(VisUI.getSkin());
-		init();
-	}
+    public VisSelectBox() {
+        super(VisUI.getSkin());
+        init();
+    }
 
-	private void init () {
-		addListener(new InputListener() {
-			@Override
-			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				FocusManager.resetFocus(getStage());
-				return false;
-			}
-		});
-	}
-
+    private void init() {
+        addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                FocusManager.resetFocus(getStage());
+                return false;
+            }
+        });
+    }
 }

@@ -22,27 +22,29 @@ import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisWindow;
 
-/** @author Kotcrab */
+/**
+ * @author Kotcrab
+ */
 public class TestFlowGroup extends VisWindow {
-	public TestFlowGroup () {
-		super("flow groups");
+    public TestFlowGroup() {
+        super("flow groups");
 
-		TableUtils.setSpacingDefaults(this);
-		columnDefaults(0).left();
+        TableUtils.setSpacingDefaults(this);
+        columnDefaults(0).left();
 
-		setResizable(true);
-		addCloseButton();
-		closeOnEscape();
+        setResizable(true);
+        addCloseButton();
+        closeOnEscape();
 
-		FlowGroup group = new FlowGroup(true, 2);
+        FlowGroup group = new FlowGroup(true, 2);
 
-		String lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi luctus magna sit amet tellus egestas tincidunt. " +
-				"Morbi tempus eleifend dictum. Nunc ex nisl, dignissim eget gravida vel, rutrum a nibh. Fusce congue odio ac elit " +
-				"rhoncus rutrum. Donec nec lectus leo. Phasellus et consectetur ante. Cras vel consectetur mauris, sed semper lectus. ";
-		String[] parts = lorem.split(" ");
-		for (String part : parts) {
-			group.addActor(new VisLabel(part));
-		}
+        String lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi luctus magna sit amet tellus egestas tincidunt. " +
+                "Morbi tempus eleifend dictum. Nunc ex nisl, dignissim eget gravida vel, rutrum a nibh. Fusce congue odio ac elit " +
+                "rhoncus rutrum. Donec nec lectus leo. Phasellus et consectetur ante. Cras vel consectetur mauris, sed semper lectus. ";
+        String[] parts = lorem.split(" ");
+        for (String part : parts) {
+            group.addActor(new VisLabel(part));
+        }
 
 //		group.addActor(new VisLabel("Lorem ipsum"));
 //		group.addActor(new VisLabel("dolor sit"));
@@ -57,14 +59,14 @@ public class TestFlowGroup extends VisWindow {
 //		group.addActor(new VisLabel("amet"));
 //		group.addActor(new VisLabel("a\nb\nc"));
 
-		VisScrollPane scrollPane = new VisScrollPane(group);
-		scrollPane.setFadeScrollBars(false);
-		scrollPane.setFlickScroll(false);
-		scrollPane.setOverscroll(false, false);
-		scrollPane.setScrollingDisabled(!group.isVertical(), group.isVertical());
-		add(scrollPane).grow();
+        VisScrollPane scrollPane = new VisScrollPane(group);
+        scrollPane.setFadeScrollBars(false);
+        scrollPane.setFlickScroll(false);
+        scrollPane.setOverscroll(false, false);
+        scrollPane.setScrollingDisabled(!group.isVertical(), group.isVertical());
+        add(scrollPane).grow();
 
-		setSize(300, 150);
-		centerWindow();
-	}
+        setSize(300, 150);
+        centerWindow();
+    }
 }

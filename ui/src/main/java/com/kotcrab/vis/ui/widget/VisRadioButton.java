@@ -28,15 +28,16 @@ import com.kotcrab.vis.ui.VisUI;
  * <p>
  * When listening for button press {@link ChangeListener} should be always preferred (instead of {@link ClickListener}).
  * {@link ClickListener} does not support disabling button and will still report button presses.
+ *
  * @author Kotcrab
  * @see VisCheckBox
  */
 public class VisRadioButton extends VisCheckBox {
-	public VisRadioButton (String text) {
-		this(text, VisUI.getSkin().get("radio", VisCheckBoxStyle.class));
-	}
+    public VisRadioButton(String text) {
+        this(text, VisUI.getSkin().get("radio", VisCheckBoxStyle.class));
+    }
 
-	public VisRadioButton (String text, VisCheckBoxStyle style) {
-		super(text, style);
-	}
+    public VisRadioButton(String text, VisCheckBoxStyle style) {
+        super(text, style);
+    }
 }

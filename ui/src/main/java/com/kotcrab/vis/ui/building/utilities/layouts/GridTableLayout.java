@@ -23,30 +23,32 @@ import com.kotcrab.vis.ui.building.utilities.CellWidget;
 /**
  * Additional TableLayout with customizable variables. Converts passed widgets into a table using
  * GridTableBuilder.
+ *
  * @author MJ
  */
 public class GridTableLayout implements ActorLayout {
-	private final int rowSize;
+    private final int rowSize;
 
-	public GridTableLayout (final int rowSize) {
-		this.rowSize = rowSize;
-	}
+    public GridTableLayout(final int rowSize) {
+        this.rowSize = rowSize;
+    }
 
-	/**
-	 * Default factory method.
-	 * @return new GridTableLayout, building grid with the passed row size.
-	 */
-	public static GridTableLayout withRowSize (final int rowSize) {
-		return new GridTableLayout(rowSize);
-	}
+    /**
+     * Default factory method.
+     *
+     * @return new GridTableLayout, building grid with the passed row size.
+     */
+    public static GridTableLayout withRowSize(final int rowSize) {
+        return new GridTableLayout(rowSize);
+    }
 
-	@Override
-	public Actor convertToActor (final Actor... widgets) {
-		return convertToActor(CellWidget.wrap(widgets));
-	}
+    @Override
+    public Actor convertToActor(final Actor... widgets) {
+        return convertToActor(CellWidget.wrap(widgets));
+    }
 
-	@Override
-	public Actor convertToActor (final CellWidget<?>... widgets) {
-		return TableLayout.convertToTable(new GridTableBuilder(rowSize), widgets);
-	}
+    @Override
+    public Actor convertToActor(final CellWidget<?>... widgets) {
+        return TableLayout.convertToTable(new GridTableBuilder(rowSize), widgets);
+    }
 }

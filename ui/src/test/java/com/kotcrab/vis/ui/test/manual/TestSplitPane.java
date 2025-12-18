@@ -27,49 +27,48 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisWindow;
 
 public class TestSplitPane extends VisWindow {
-	private boolean vertical = false;
+    private final boolean vertical = false;
 
-	public TestSplitPane () {
-		super("splitpane");
+    public TestSplitPane() {
+        super("splitpane");
 
-		TableUtils.setSpacingDefaults(this);
-		columnDefaults(0).left();
+        TableUtils.setSpacingDefaults(this);
+        columnDefaults(0).left();
 
-		if (TestApplication.USE_VIS_WIDGETS)
-			addVisWidgets();
-		else
-			addNormalWidgets();
+        if (TestApplication.USE_VIS_WIDGETS)
+            addVisWidgets();
+        else
+            addNormalWidgets();
 
-		setSize(300, 150);
-		setPosition(958, 245);
-	}
+        setSize(300, 150);
+        setPosition(958, 245);
+    }
 
-	private void addVisWidgets () {
-		VisLabel label = new VisLabel("Lorem \nipsum \ndolor \nsit \namet");
-		VisLabel label2 = new VisLabel("Consectetur \nadipiscing \nelit");
-		VisTable table = new VisTable(true);
-		VisTable table2 = new VisTable(true);
+    private void addVisWidgets() {
+        VisLabel label = new VisLabel("Lorem \nipsum \ndolor \nsit \namet");
+        VisLabel label2 = new VisLabel("Consectetur \nadipiscing \nelit");
+        VisTable table = new VisTable(true);
+        VisTable table2 = new VisTable(true);
 
-		table.add(label);
-		table2.add(label2);
+        table.add(label);
+        table2.add(label2);
 
-		VisSplitPane splitPane = new VisSplitPane(table, table2, vertical);
-		add(splitPane).fill().expand();
-	}
+        VisSplitPane splitPane = new VisSplitPane(table, table2, vertical);
+        add(splitPane).fill().expand();
+    }
 
-	private void addNormalWidgets () {
-		Skin skin = VisUI.getSkin();
-		Label label = new Label("Lorem \nipsum \ndolor \nsit \namet", skin);
-		Label label2 = new Label("Consectetur \nadipiscing \nelit", skin);
+    private void addNormalWidgets() {
+        Skin skin = VisUI.getSkin();
+        Label label = new Label("Lorem \nipsum \ndolor \nsit \namet", skin);
+        Label label2 = new Label("Consectetur \nadipiscing \nelit", skin);
 
-		VisTable table = new VisTable(true);
-		VisTable table2 = new VisTable(true);
+        VisTable table = new VisTable(true);
+        VisTable table2 = new VisTable(true);
 
-		table.add(label);
-		table2.add(label2);
+        table.add(label);
+        table2.add(label2);
 
-		SplitPane splitPane = new SplitPane(table, table2, false, skin);
-		add(splitPane).fill().expand();
-	}
-
+        SplitPane splitPane = new SplitPane(table, table2, false, skin);
+        add(splitPane).fill().expand();
+    }
 }

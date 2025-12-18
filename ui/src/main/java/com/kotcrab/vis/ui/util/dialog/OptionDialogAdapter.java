@@ -18,21 +18,22 @@ package com.kotcrab.vis.ui.util.dialog;
 
 /**
  * Empty implementation of {@link OptionDialogListener}.
+ *
  * @author Kotcrab
  */
 public class OptionDialogAdapter implements OptionDialogListener {
-	@Override
-	public void yes () {
+    @Override
+    public void yes() {
 
-	}
+    }
 
-	@Override
-	public void no () {
+    @Override
+    public void no() {
 
-	}
+    }
 
-	@Override
-	public void cancel () {
+    @Override
+    public void cancel() {
 
-	}
+    }
 }

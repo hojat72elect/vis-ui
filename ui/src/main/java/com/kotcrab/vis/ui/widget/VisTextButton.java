@@ -34,96 +34,97 @@ import com.kotcrab.vis.ui.util.BorderOwner;
  * <p>
  * When listening for button press {@link ChangeListener} should be always preferred (instead of {@link ClickListener}).
  * {@link ClickListener} does not support disabling button and will still report button presses.
+ *
  * @author Kotcrab
  * @see TextButton
  */
 public class VisTextButton extends TextButton implements Focusable, BorderOwner {
-	private VisTextButtonStyle style;
+    private VisTextButtonStyle style;
 
-	private boolean drawBorder;
-	private boolean focusBorderEnabled = true;
+    private boolean drawBorder;
+    private boolean focusBorderEnabled = true;
 
-	public VisTextButton (String text, String styleName) {
-		super(text, VisUI.getSkin().get(styleName, VisTextButtonStyle.class));
-		init();
-	}
+    public VisTextButton(String text, String styleName) {
+        super(text, VisUI.getSkin().get(styleName, VisTextButtonStyle.class));
+        init();
+    }
 
-	public VisTextButton (String text) {
-		super(text, VisUI.getSkin().get(VisTextButtonStyle.class));
-		init();
-	}
+    public VisTextButton(String text) {
+        super(text, VisUI.getSkin().get(VisTextButtonStyle.class));
+        init();
+    }
 
-	public VisTextButton (String text, ChangeListener listener) {
-		super(text, VisUI.getSkin().get(VisTextButtonStyle.class));
-		init();
-		addListener(listener);
-	}
+    public VisTextButton(String text, ChangeListener listener) {
+        super(text, VisUI.getSkin().get(VisTextButtonStyle.class));
+        init();
+        addListener(listener);
+    }
 
-	public VisTextButton (String text, String styleName, ChangeListener listener) {
-		super(text, VisUI.getSkin().get(styleName, VisTextButtonStyle.class));
-		init();
-		addListener(listener);
-	}
+    public VisTextButton(String text, String styleName, ChangeListener listener) {
+        super(text, VisUI.getSkin().get(styleName, VisTextButtonStyle.class));
+        init();
+        addListener(listener);
+    }
 
-	public VisTextButton (String text, VisTextButtonStyle buttonStyle) {
-		super(text, buttonStyle);
-		init();
-	}
+    public VisTextButton(String text, VisTextButtonStyle buttonStyle) {
+        super(text, buttonStyle);
+        init();
+    }
 
-	private void init () {
-		style = (VisTextButtonStyle) getStyle();
+    private void init() {
+        style = (VisTextButtonStyle) getStyle();
 
-		addListener(new InputListener() {
-			@Override
-			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				if (isDisabled() == false) FocusManager.switchFocus(getStage(), VisTextButton.this);
-				return false;
-			}
-		});
-	}
+        addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                if (!isDisabled()) FocusManager.switchFocus(getStage(), VisTextButton.this);
+                return false;
+            }
+        });
+    }
 
-	@Override
-	public void draw (Batch batch, float parentAlpha) {
-		super.draw(batch, parentAlpha);
-		if (focusBorderEnabled && drawBorder && style.focusBorder != null) {
-			style.focusBorder.draw(batch, getX(), getY(), getWidth(), getHeight());
-		}
-	}
+    @Override
+    public void draw(Batch batch, float parentAlpha) {
+        super.draw(batch, parentAlpha);
+        if (focusBorderEnabled && drawBorder && style.focusBorder != null) {
+            style.focusBorder.draw(batch, getX(), getY(), getWidth(), getHeight());
+        }
+    }
 
-	static public class VisTextButtonStyle extends TextButtonStyle {
-		public Drawable focusBorder;
+    @Override
+    public boolean isFocusBorderEnabled() {
+        return focusBorderEnabled;
+    }
 
-		public VisTextButtonStyle () {
-			super();
-		}
+    @Override
+    public void setFocusBorderEnabled(boolean focusBorderEnabled) {
+        this.focusBorderEnabled = focusBorderEnabled;
+    }
 
-		public VisTextButtonStyle (Drawable up, Drawable down, Drawable checked, BitmapFont font) {
-			super(up, down, checked, font);
-		}
+    @Override
+    public void focusLost() {
+        drawBorder = false;
+    }
 
-		public VisTextButtonStyle (VisTextButtonStyle style) {
-			super(style);
-			this.focusBorder = style.focusBorder;
-		}
-	}
+    @Override
+    public void focusGained() {
+        drawBorder = true;
+    }
 
-	@Override
-	public boolean isFocusBorderEnabled () {
-		return focusBorderEnabled;
-	}
+    static public class VisTextButtonStyle extends TextButtonStyle {
+        public Drawable focusBorder;
 
-	@Override
-	public void setFocusBorderEnabled (boolean focusBorderEnabled) {
-		this.focusBorderEnabled = focusBorderEnabled;
-	}
+        public VisTextButtonStyle() {
+            super();
+        }
 
-	@Override
-	public void focusLost () {
-		drawBorder = false;
-	}
+        public VisTextButtonStyle(Drawable up, Drawable down, Drawable checked, BitmapFont font) {
+            super(up, down, checked, font);
+        }
 
-	@Override
-	public void focusGained () {
-		drawBorder = true;
-	}
+        public VisTextButtonStyle(VisTextButtonStyle style) {
+            super(style);
+            this.focusBorder = style.focusBorder;
+        }
+    }
 }

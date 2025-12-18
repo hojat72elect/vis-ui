@@ -27,77 +27,77 @@ import com.kotcrab.vis.ui.widget.color.internal.ColorInputField.ColorInputFieldL
 
 /**
  * Used to display one color channel (hue, saturation etc.) with label, ColorInputField and ChannelBar.
+ *
  * @author Kotcrab
  */
 public class ColorChannelWidget extends VisTable {
-	private PickerCommons commons;
-	private ColorPickerWidgetStyle style;
-	private Sizes sizes;
+    private final PickerCommons commons;
+    private final ColorPickerWidgetStyle style;
+    private final Sizes sizes;
 
-	private ChannelBar bar;
-	private ChangeListener barListener;
-	private ColorInputField inputField;
+    private final ChannelBar bar;
+    private final ChangeListener barListener;
+    private final ColorInputField inputField;
 
-	private int mode;
-	private int value;
-	private int maxValue;
+    private final int mode;
+    private int value;
+    private final int maxValue;
 
-	public ColorChannelWidget (PickerCommons commons, String label, int mode, int maxValue, final ChannelBar.ChannelBarListener listener) {
-		super(true);
-		this.commons = commons;
+    public ColorChannelWidget(PickerCommons commons, String label, int mode, int maxValue, final ChannelBar.ChannelBarListener listener) {
+        super(true);
+        this.commons = commons;
 
-		this.style = commons.style;
-		this.sizes = commons.sizes;
-		this.mode = mode;
-		this.maxValue = maxValue;
+        this.style = commons.style;
+        this.sizes = commons.sizes;
+        this.mode = mode;
+        this.maxValue = maxValue;
 
-		barListener = new ChangeListener() {
-			@Override
-			public void changed (ChangeEvent event, Actor actor) {
-				value = bar.getValue();
-				listener.updateFields();
-				inputField.setValue(value);
-			}
-		};
+        barListener = new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                value = bar.getValue();
+                listener.updateFields();
+                inputField.setValue(value);
+            }
+        };
 
-		add(new VisLabel(label)).width(10 * sizes.scaleFactor).center();
-		add(inputField = new ColorInputField(maxValue, new ColorInputFieldListener() {
-			@Override
-			public void changed (int newValue) {
-				value = newValue;
-				listener.updateFields();
-				bar.setValue(newValue);
-			}
-		})).width(BasicColorPicker.FIELD_WIDTH * sizes.scaleFactor);
-		add(bar = createBarImage()).size(BasicColorPicker.BAR_WIDTH * sizes.scaleFactor, BasicColorPicker.BAR_HEIGHT * sizes.scaleFactor);
-		bar.setChannelBarListener(listener);
+        add(new VisLabel(label)).width(10 * sizes.scaleFactor).center();
+        add(inputField = new ColorInputField(maxValue, new ColorInputFieldListener() {
+            @Override
+            public void changed(int newValue) {
+                value = newValue;
+                listener.updateFields();
+                bar.setValue(newValue);
+            }
+        })).width(BasicColorPicker.FIELD_WIDTH * sizes.scaleFactor);
+        add(bar = createBarImage()).size(BasicColorPicker.BAR_WIDTH * sizes.scaleFactor, BasicColorPicker.BAR_HEIGHT * sizes.scaleFactor);
+        bar.setChannelBarListener(listener);
 
-		inputField.setValue(0);
-	}
+        inputField.setValue(0);
+    }
 
-	public int getValue () {
-		return value;
-	}
+    public int getValue() {
+        return value;
+    }
 
-	public void setValue (int value) {
-		this.value = value;
-		inputField.setValue(value);
-		bar.setValue(value);
-	}
+    public void setValue(int value) {
+        this.value = value;
+        inputField.setValue(value);
+        bar.setValue(value);
+    }
 
-	private ChannelBar createBarImage () {
-		if (mode == ChannelBar.MODE_ALPHA)
-			return new AlphaChannelBar(commons, mode, maxValue, barListener);
-		else
-			return new ChannelBar(commons, mode, maxValue, barListener);
-	}
+    private ChannelBar createBarImage() {
+        if (mode == ChannelBar.MODE_ALPHA)
+            return new AlphaChannelBar(commons, mode, maxValue, barListener);
+        else
+            return new ChannelBar(commons, mode, maxValue, barListener);
+    }
 
-	public ChannelBar getBar () {
-		return bar;
-	}
+    public ChannelBar getBar() {
+        return bar;
+    }
 
-	public boolean isInputValid () {
-		return inputField.isInputValid();
-	}
-
+    public boolean isInputValid() {
+        return inputField.isInputValid();
+    }
 }

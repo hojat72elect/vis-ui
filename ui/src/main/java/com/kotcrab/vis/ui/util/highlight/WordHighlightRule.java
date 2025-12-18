@@ -22,25 +22,26 @@ import com.kotcrab.vis.ui.widget.HighlightTextArea;
 
 /**
  * Highlighter rule using {@link String#indexOf(String)} to detect text matches.
+ *
  * @author Kotcrab
  * @since 1.1.2
  */
 public class WordHighlightRule implements HighlightRule {
-	private Color color;
-	private String word;
+    private final Color color;
+    private final String word;
 
-	public WordHighlightRule (Color color, String word) {
-		this.color = color;
-		this.word = word;
-	}
+    public WordHighlightRule(Color color, String word) {
+        this.color = color;
+        this.word = word;
+    }
 
-	@Override
-	public void process (HighlightTextArea textArea, Array<Highlight> highlights) {
-		String text = textArea.getText();
-		int index = text.indexOf(word);
-		while (index >= 0) {
-			highlights.add(new Highlight(color, index, index += word.length()));
-			index = text.indexOf(word, index);
-		}
-	}
+    @Override
+    public void process(HighlightTextArea textArea, Array<Highlight> highlights) {
+        String text = textArea.getText();
+        int index = text.indexOf(word);
+        while (index >= 0) {
+            highlights.add(new Highlight(color, index, index += word.length()));
+            index = text.indexOf(word, index);
+        }
+    }
 }

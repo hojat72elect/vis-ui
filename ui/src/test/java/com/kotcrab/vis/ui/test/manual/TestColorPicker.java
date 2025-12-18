@@ -29,46 +29,46 @@ import com.kotcrab.vis.ui.widget.color.ColorPicker;
 import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter;
 
 public class TestColorPicker extends VisWindow {
-	private static final Drawable white = VisUI.getSkin().getDrawable("white");
+    private static final Drawable white = VisUI.getSkin().getDrawable("white");
 
-	private ColorPicker picker;
+    private final ColorPicker picker;
 
-	public TestColorPicker () {
-		super("color picker");
+    public TestColorPicker() {
+        super("color picker");
 
-		final Image image = new Image(white);
+        final Image image = new Image(white);
 
-		picker = new ColorPicker("color picker", new ColorPickerAdapter() {
-			@Override
-			public void finished (Color newColor) {
-				image.setColor(newColor);
-			}
-		});
+        picker = new ColorPicker("color picker", new ColorPickerAdapter() {
+            @Override
+            public void finished(Color newColor) {
+                image.setColor(newColor);
+            }
+        });
 
-		VisTextButton showPickerButton = new VisTextButton("show color picker");
-		showPickerButton.addListener(new ChangeListener() {
-			@Override
-			public void changed (ChangeEvent event, Actor actor) {
-				getStage().addActor(picker.fadeIn());
-			}
-		});
+        VisTextButton showPickerButton = new VisTextButton("show color picker");
+        showPickerButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                getStage().addActor(picker.fadeIn());
+            }
+        });
 
-		Color c = new Color(27 / 255.0f, 161 / 255.0f, 226 / 255.0f, 1);
-		picker.setColor(c);
-		image.setColor(c);
+        Color c = new Color(27 / 255.0f, 161 / 255.0f, 226 / 255.0f, 1);
+        picker.setColor(c);
+        image.setColor(c);
 
-		TableUtils.setSpacingDefaults(this);
+        TableUtils.setSpacingDefaults(this);
 
-		add(showPickerButton);
-		add(image).size(32).pad(3);
+        add(showPickerButton);
+        add(image).size(32).pad(3);
 
-		pack();
-		setPosition(948, 148);
-	}
+        pack();
+        setPosition(948, 148);
+    }
 
-	@Override
-	protected void close () {
-		super.close();
-		picker.dispose();
-	}
+    @Override
+    protected void close() {
+        super.close();
+        picker.dispose();
+    }
 }

@@ -18,10 +18,11 @@ package com.kotcrab.vis.ui.util;
 
 /**
  * Implemented by actors that has VisUI focus border, actor implementing this interface must support disabling its border.
+ *
  * @author Kotcrab
  */
 public interface BorderOwner {
-	boolean isFocusBorderEnabled ();
+    boolean isFocusBorderEnabled();
 
-	void setFocusBorderEnabled (boolean focusBorderEnabled);
+    void setFocusBorderEnabled(boolean focusBorderEnabled);
 }

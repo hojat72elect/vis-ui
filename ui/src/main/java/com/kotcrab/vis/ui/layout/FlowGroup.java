@@ -31,370 +31,367 @@ import com.badlogic.gdx.utils.SnapshotArray;
  *   <li>Adds spacing only between children, but not after the last element.</li>
  *   <li>When even the first child does not fit its row/column, space is no longer placed before it.</li>
  * </ul>
+ *
  * @author ccmb2r
  * @since 1.4.7
  */
 public class FlowGroup extends WidgetGroup {
-	private static final float DEFAULT_SPACING = 0;
-
-	private boolean vertical;
-	private float spacing;
-
-	private boolean sizeInvalid = true;
-
-	private float minWidth;
-	private float minHeight;
-
-	private float layoutedWidth;
-	private float layoutedHeight;
-
-	private float relaxedWidth;
-	private float relaxedHeight;
+    private static final float DEFAULT_SPACING = 0;
+
+    private boolean vertical;
+    private float spacing;
+
+    private boolean sizeInvalid = true;
+
+    private float minWidth;
+    private float minHeight;
+
+    private float layoutedWidth;
+    private float layoutedHeight;
 
-	public FlowGroup (boolean vertical) {
-		this(vertical, DEFAULT_SPACING);
-	}
+    private float relaxedWidth;
+    private float relaxedHeight;
 
-	public FlowGroup (boolean vertical, float spacing) {
-		this.vertical = vertical;
-		this.spacing = spacing;
-		setTouchable(Touchable.childrenOnly);
-	}
+    public FlowGroup(boolean vertical) {
+        this(vertical, DEFAULT_SPACING);
+    }
 
-	public boolean isVertical () {
-		return vertical;
-	}
+    public FlowGroup(boolean vertical, float spacing) {
+        this.vertical = vertical;
+        this.spacing = spacing;
+        setTouchable(Touchable.childrenOnly);
+    }
 
-	public void setVertical (boolean vertical) {
-		if (this.vertical == vertical) {
-			return;
-		}
+    public boolean isVertical() {
+        return vertical;
+    }
 
-		this.vertical = vertical;
-		invalidate();
-	}
+    public void setVertical(boolean vertical) {
+        if (this.vertical == vertical) {
+            return;
+        }
 
-	protected void computeSize () {
-		if (vertical) {
-			computeSizeVertical();
-		} else {
-			computeSizeHorizontal();
-		}
-	}
+        this.vertical = vertical;
+        invalidate();
+    }
 
-	protected void computeSizeHorizontal () {
-		final float targetWidth = getWidth();
-
-		float maxChildWidth = 0;
-		float maxChildHeight = 0;
-
-		float x = 0;
-		float currentRowHeight = 0;
-		float totalWidth = 0;
-		float totalHeight = 0;
-
-		SnapshotArray<Actor> children = getChildren();
-		boolean wasChildProcessed = false;
-
-		for (Actor child : children) {
-			float childWidth;
-			float childHeight;
-
-			if (child instanceof Layout) {
-				Layout layout = (Layout) child;
-
-				childWidth = layout.getPrefWidth();
-				childHeight = layout.getPrefHeight();
-			} else {
-				childWidth = child.getWidth();
-				childHeight = child.getHeight();
-			}
-
-			//See if it fits this row but place at least one child in the first row!
-			if (x + childWidth <= targetWidth || !wasChildProcessed) {
-				//Fits into this row.
-				currentRowHeight = Math.max(childHeight, currentRowHeight);
-			} else {
-				//Start new row.
-				totalHeight += currentRowHeight + spacing;
-				x = 0;
-				currentRowHeight = childHeight;
-			}
-
-			float widthIncrement = childWidth + spacing;
+    protected void computeSize() {
+        if (vertical) {
+            computeSizeVertical();
+        } else {
+            computeSizeHorizontal();
+        }
+    }
 
-			x += widthIncrement;
-			totalWidth += widthIncrement;
+    protected void computeSizeHorizontal() {
+        final float targetWidth = getWidth();
+
+        float maxChildWidth = 0;
+        float maxChildHeight = 0;
+
+        float x = 0;
+        float currentRowHeight = 0;
+        float totalWidth = 0;
+        float totalHeight = 0;
+
+        SnapshotArray<Actor> children = getChildren();
+        boolean wasChildProcessed = false;
 
-			maxChildWidth = Math.max(maxChildWidth, childWidth);
-			maxChildHeight = Math.max(maxChildHeight, childHeight);
-
-			wasChildProcessed = true;
-		}
-
-		//Handle last column (if at least one column exists).
-		if (wasChildProcessed) {
-			//Remove the last spacing that was added excessively.
-			totalWidth -= spacing;
-		}
+        for (Actor child : children) {
+            float childWidth;
+            float childHeight;
 
-		//Handle last row (no final spacing).
-		totalHeight += currentRowHeight;
+            if (child instanceof Layout layout) {
 
-		//Store results.
-		minWidth = maxChildWidth;
-		minHeight = maxChildHeight;
+                childWidth = layout.getPrefWidth();
+                childHeight = layout.getPrefHeight();
+            } else {
+                childWidth = child.getWidth();
+                childHeight = child.getHeight();
+            }
+
+            //See if it fits this row but place at least one child in the first row!
+            if (x + childWidth <= targetWidth || !wasChildProcessed) {
+                //Fits into this row.
+                currentRowHeight = Math.max(childHeight, currentRowHeight);
+            } else {
+                //Start new row.
+                totalHeight += currentRowHeight + spacing;
+                x = 0;
+                currentRowHeight = childHeight;
+            }
 
-		layoutedWidth = targetWidth;
-		layoutedHeight = totalHeight;
+            float widthIncrement = childWidth + spacing;
 
-		relaxedWidth = totalWidth;
+            x += widthIncrement;
+            totalWidth += widthIncrement;
 
-		sizeInvalid = false;
-	}
+            maxChildWidth = Math.max(maxChildWidth, childWidth);
+            maxChildHeight = Math.max(maxChildHeight, childHeight);
 
-	protected void computeSizeVertical () {
-		final float targetHeight = getHeight();
+            wasChildProcessed = true;
+        }
+
+        //Handle last column (if at least one column exists).
+        if (wasChildProcessed) {
+            //Remove the last spacing that was added excessively.
+            totalWidth -= spacing;
+        }
 
-		float maxChildWidth = 0;
-		float maxChildHeight = 0;
+        //Handle last row (no final spacing).
+        totalHeight += currentRowHeight;
 
-		float y = targetHeight;
-		float currentColumnWidth = 0;
-		float totalWidth = 0;
-		float totalHeight = 0;
+        //Store results.
+        minWidth = maxChildWidth;
+        minHeight = maxChildHeight;
 
-		SnapshotArray<Actor> children = getChildren();
-		boolean wasChildProcessed = false;
+        layoutedWidth = targetWidth;
+        layoutedHeight = totalHeight;
 
-		for (Actor child : children) {
-			float childWidth;
-			float childHeight;
+        relaxedWidth = totalWidth;
 
-			if (child instanceof Layout) {
-				Layout layout = (Layout) child;
+        sizeInvalid = false;
+    }
 
-				childWidth = layout.getPrefWidth();
-				childHeight = layout.getPrefHeight();
-			} else {
-				childWidth = child.getWidth();
-				childHeight = child.getHeight();
-			}
-
-			//See if it fits this column but place at least one child in the first column!
-			if (y - childHeight >= 0 || !wasChildProcessed) {
-				//Fits into this column.
-				currentColumnWidth = Math.max(childWidth, currentColumnWidth);
-			} else {
-				//Start new column.
-				totalWidth += currentColumnWidth + spacing;
-				y = targetHeight;
-				currentColumnWidth = childWidth;
-			}
+    protected void computeSizeVertical() {
+        final float targetHeight = getHeight();
 
-			float heightIncrement = childHeight + spacing;
-
-			y -= heightIncrement;
-			totalHeight += heightIncrement;
-
-			maxChildWidth = Math.max(maxChildWidth, childWidth);
-			maxChildHeight = Math.max(maxChildHeight, childHeight);
+        float maxChildWidth = 0;
+        float maxChildHeight = 0;
 
-			wasChildProcessed = true;
-		}
+        float y = targetHeight;
+        float currentColumnWidth = 0;
+        float totalWidth = 0;
+        float totalHeight = 0;
 
-		//Handle last row (if at least one row exists).
-		if (wasChildProcessed) {
-			//Remove the last spacing that was added excessively.
-			totalHeight -= spacing;
-		}
+        SnapshotArray<Actor> children = getChildren();
+        boolean wasChildProcessed = false;
 
-		//Handle last column (no final spacing).
-		totalWidth += currentColumnWidth;
+        for (Actor child : children) {
+            float childWidth;
+            float childHeight;
 
-		//Store results.
-		minWidth = maxChildWidth;
-		minHeight = maxChildHeight;
+            if (child instanceof Layout layout) {
 
-		layoutedWidth = totalWidth;
-		layoutedHeight = targetHeight;
+                childWidth = layout.getPrefWidth();
+                childHeight = layout.getPrefHeight();
+            } else {
+                childWidth = child.getWidth();
+                childHeight = child.getHeight();
+            }
 
-		relaxedHeight = totalHeight;
+            //See if it fits this column but place at least one child in the first column!
+            if (y - childHeight >= 0 || !wasChildProcessed) {
+                //Fits into this column.
+                currentColumnWidth = Math.max(childWidth, currentColumnWidth);
+            } else {
+                //Start new column.
+                totalWidth += currentColumnWidth + spacing;
+                y = targetHeight;
+                currentColumnWidth = childWidth;
+            }
 
-		sizeInvalid = false;
-	}
+            float heightIncrement = childHeight + spacing;
 
-	@Override
-	public void layout () {
-		if (vertical) {
-			layoutVertical();
-		} else {
-			layoutHorizontal();
-		}
-	}
+            y -= heightIncrement;
+            totalHeight += heightIncrement;
 
-	protected void layoutHorizontal () {
-		//NOTE: Should children invalidate/validate as per contract?
+            maxChildWidth = Math.max(maxChildWidth, childWidth);
+            maxChildHeight = Math.max(maxChildHeight, childHeight);
 
-		computeSizeIfNeeded();
-
-		final float targetWidth = getWidth();
-		final float targetHeight = getHeight();
-
-		float x = 0;
-		float y = targetHeight;
-		float rowHeight = 0;
-
-		SnapshotArray<Actor> children = getChildren();
-		boolean wasChildProcessed = false;
+            wasChildProcessed = true;
+        }
 
-		//Layout the child; first upside down as total height is, as of yet, unknown
-		//(due to the dynamic width used) and will be determined during this run.
-		for (Actor child : children) {
-			float childWidth;
-			float childHeight;
-
-			if (child instanceof Layout) {
-				Layout layout = (Layout) child;
-
-				childWidth = layout.getPrefWidth();
-				childHeight = layout.getPrefHeight();
-
-				//Need to update size.
-				child.setSize(childWidth, childHeight);
-			} else {
-				childWidth = child.getWidth();
-				childHeight = child.getHeight();
-
-				//Child already at size.
-			}
-
-			//See if it fits this row but place at least one child in the first row!
-			if (x + childWidth <= targetWidth || !wasChildProcessed) {
-				//Fits into this row.
-				rowHeight = Math.max(childHeight, rowHeight);
-			} else {
-				//Start new row.
-				x = 0;
-				y -= rowHeight + spacing;
-				rowHeight = childHeight;
-			}
-
-			child.setPosition(x, y - childHeight);
-
-			x += childWidth + spacing;
-
-			wasChildProcessed = true;
-		}
-
-		//Did a best effort to fit into the specified size but it still did not work.
-		//Let the ancestors know in hopes that they resize the group.
-		if (getHeight() != layoutedHeight) {
-			invalidateHierarchy();
-		}
-	}
-
-	protected void layoutVertical () {
-		//NOTE: Should children invalidate/validate as per contract?
-
-		computeSizeIfNeeded();
-
-		final float targetHeight = getHeight();
-
-		float x = 0;
-		float y = targetHeight;
-		float columnWidth = 0;
-
-		SnapshotArray<Actor> children = getChildren();
-		boolean wasChildProcessed = false;
-
-		//Layout the child; first upside down as total height is, as of yet, unknown
-		//(due to the dynamic width used) and will be determined during this run.
-		for (Actor child : children) {
-			float childWidth;
-			float childHeight;
-
-			if (child instanceof Layout) {
-				Layout layout = (Layout) child;
-
-				childWidth = layout.getPrefWidth();
-				childHeight = layout.getPrefHeight();
-
-				//Need to update size.
-				child.setSize(childWidth, childHeight);
-			} else {
-				childWidth = child.getWidth();
-				childHeight = child.getHeight();
-
-				//Child already at size.
-			}
-
-			//See if it fits this column but place at least one child in the first column!
-			if (y - childHeight >= 0 || !wasChildProcessed) {
-				//Fits into this column.
-				columnWidth = Math.max(childWidth, columnWidth);
-			} else {
-				//Start new column.
-				x += columnWidth + spacing;
-				y = targetHeight;
-				columnWidth = childWidth;
-			}
-
-			child.setPosition(x, y - childHeight);
-			y -= childHeight + spacing;
-
-			wasChildProcessed = true;
-		}
-
-		//Did a best effort to fit into the specified size but it still did not work.
-		//Let the ancestors know in hopes that they resize the group.
-		if (getWidth() != layoutedWidth) {
-			invalidateHierarchy();
-		}
-	}
-
-	public float getSpacing () {
-		return spacing;
-	}
-
-	public void setSpacing (float spacing) {
-		this.spacing = spacing;
-		invalidateHierarchy();
-	}
-
-	@Override
-	public void invalidate () {
-		sizeInvalid = true;
-		super.invalidate();
-	}
-
-	@Override
-	public float getMinWidth () {
-		computeSizeIfNeeded();
-		return minWidth;
-	}
-
-	@Override
-	public float getMinHeight () {
-		computeSizeIfNeeded();
-		return minHeight;
-	}
-
-	@Override
-	public float getPrefWidth () {
-		computeSizeIfNeeded();
-		return vertical ? layoutedWidth : relaxedWidth;
-	}
-
-	@Override
-	public float getPrefHeight () {
-		computeSizeIfNeeded();
-		return vertical ? relaxedHeight : layoutedHeight;
-	}
-
-	protected void computeSizeIfNeeded () {
-		if (sizeInvalid) {
-			computeSize();
-		}
-	}
+        //Handle last row (if at least one row exists).
+        if (wasChildProcessed) {
+            //Remove the last spacing that was added excessively.
+            totalHeight -= spacing;
+        }
+
+        //Handle last column (no final spacing).
+        totalWidth += currentColumnWidth;
+
+        //Store results.
+        minWidth = maxChildWidth;
+        minHeight = maxChildHeight;
+
+        layoutedWidth = totalWidth;
+        layoutedHeight = targetHeight;
+
+        relaxedHeight = totalHeight;
+
+        sizeInvalid = false;
+    }
+
+    @Override
+    public void layout() {
+        if (vertical) {
+            layoutVertical();
+        } else {
+            layoutHorizontal();
+        }
+    }
+
+    protected void layoutHorizontal() {
+        //NOTE: Should children invalidate/validate as per contract?
+
+        computeSizeIfNeeded();
+
+        final float targetWidth = getWidth();
+        final float targetHeight = getHeight();
+
+        float x = 0;
+        float y = targetHeight;
+        float rowHeight = 0;
+
+        SnapshotArray<Actor> children = getChildren();
+        boolean wasChildProcessed = false;
+
+        //Layout the child; first upside down as total height is, as of yet, unknown
+        //(due to the dynamic width used) and will be determined during this run.
+        for (Actor child : children) {
+            float childWidth;
+            float childHeight;
+
+            if (child instanceof Layout layout) {
+
+                childWidth = layout.getPrefWidth();
+                childHeight = layout.getPrefHeight();
+
+                //Need to update size.
+                child.setSize(childWidth, childHeight);
+            } else {
+                childWidth = child.getWidth();
+                childHeight = child.getHeight();
+
+                //Child already at size.
+            }
+
+            //See if it fits this row but place at least one child in the first row!
+            if (x + childWidth <= targetWidth || !wasChildProcessed) {
+                //Fits into this row.
+                rowHeight = Math.max(childHeight, rowHeight);
+            } else {
+                //Start new row.
+                x = 0;
+                y -= rowHeight + spacing;
+                rowHeight = childHeight;
+            }
+
+            child.setPosition(x, y - childHeight);
+
+            x += childWidth + spacing;
+
+            wasChildProcessed = true;
+        }
+
+        //Did a best effort to fit into the specified size but it still did not work.
+        //Let the ancestors know in hopes that they resize the group.
+        if (getHeight() != layoutedHeight) {
+            invalidateHierarchy();
+        }
+    }
+
+    protected void layoutVertical() {
+        //NOTE: Should children invalidate/validate as per contract?
+
+        computeSizeIfNeeded();
+
+        final float targetHeight = getHeight();
+
+        float x = 0;
+        float y = targetHeight;
+        float columnWidth = 0;
+
+        SnapshotArray<Actor> children = getChildren();
+        boolean wasChildProcessed = false;
+
+        //Layout the child; first upside down as total height is, as of yet, unknown
+        //(due to the dynamic width used) and will be determined during this run.
+        for (Actor child : children) {
+            float childWidth;
+            float childHeight;
+
+            if (child instanceof Layout layout) {
+
+                childWidth = layout.getPrefWidth();
+                childHeight = layout.getPrefHeight();
+
+                //Need to update size.
+                child.setSize(childWidth, childHeight);
+            } else {
+                childWidth = child.getWidth();
+                childHeight = child.getHeight();
+
+                //Child already at size.
+            }
+
+            //See if it fits this column but place at least one child in the first column!
+            if (y - childHeight >= 0 || !wasChildProcessed) {
+                //Fits into this column.
+                columnWidth = Math.max(childWidth, columnWidth);
+            } else {
+                //Start new column.
+                x += columnWidth + spacing;
+                y = targetHeight;
+                columnWidth = childWidth;
+            }
+
+            child.setPosition(x, y - childHeight);
+            y -= childHeight + spacing;
+
+            wasChildProcessed = true;
+        }
+
+        //Did a best effort to fit into the specified size but it still did not work.
+        //Let the ancestors know in hopes that they resize the group.
+        if (getWidth() != layoutedWidth) {
+            invalidateHierarchy();
+        }
+    }
+
+    public float getSpacing() {
+        return spacing;
+    }
+
+    public void setSpacing(float spacing) {
+        this.spacing = spacing;
+        invalidateHierarchy();
+    }
+
+    @Override
+    public void invalidate() {
+        sizeInvalid = true;
+        super.invalidate();
+    }
+
+    @Override
+    public float getMinWidth() {
+        computeSizeIfNeeded();
+        return minWidth;
+    }
+
+    @Override
+    public float getMinHeight() {
+        computeSizeIfNeeded();
+        return minHeight;
+    }
+
+    @Override
+    public float getPrefWidth() {
+        computeSizeIfNeeded();
+        return vertical ? layoutedWidth : relaxedWidth;
+    }
+
+    @Override
+    public float getPrefHeight() {
+        computeSizeIfNeeded();
+        return vertical ? relaxedHeight : layoutedHeight;
+    }
+
+    protected void computeSizeIfNeeded() {
+        if (sizeInvalid) {
+            computeSize();
+        }
+    }
 }

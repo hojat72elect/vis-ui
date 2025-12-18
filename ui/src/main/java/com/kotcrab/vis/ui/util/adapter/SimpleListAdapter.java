@@ -26,57 +26,58 @@ import com.kotcrab.vis.ui.widget.VisTable;
 /**
  * Very simple default implementation of adapter for {@link ListView}. Uses {@link Object#toString()} to create text
  * view for item.
+ *
  * @author Kotcrab
  */
 public class SimpleListAdapter<ItemT> extends ArrayAdapter<ItemT, VisTable> {
-	private final SimpleListAdapterStyle style;
+    private final SimpleListAdapterStyle style;
 
-	public SimpleListAdapter (Array<ItemT> array) {
-		this(array, "default");
-	}
+    public SimpleListAdapter(Array<ItemT> array) {
+        this(array, "default");
+    }
 
-	public SimpleListAdapter (Array<ItemT> array, String styleName) {
-		this(array, VisUI.getSkin().get(styleName, SimpleListAdapterStyle.class));
-	}
+    public SimpleListAdapter(Array<ItemT> array, String styleName) {
+        this(array, VisUI.getSkin().get(styleName, SimpleListAdapterStyle.class));
+    }
 
-	public SimpleListAdapter (Array<ItemT> array, SimpleListAdapterStyle style) {
-		super(array);
-		this.style = style;
-	}
+    public SimpleListAdapter(Array<ItemT> array, SimpleListAdapterStyle style) {
+        super(array);
+        this.style = style;
+    }
 
-	@Override
-	protected VisTable createView (ItemT item) {
-		VisTable table = new VisTable();
-		table.left();
-		table.add(new VisLabel(item.toString()));
-		return table;
-	}
+    @Override
+    protected VisTable createView(ItemT item) {
+        VisTable table = new VisTable();
+        table.left();
+        table.add(new VisLabel(item.toString()));
+        return table;
+    }
 
-	@Override
-	protected void selectView (VisTable view) {
-		view.setBackground(style.selection);
-	}
+    @Override
+    protected void selectView(VisTable view) {
+        view.setBackground(style.selection);
+    }
 
-	@Override
-	protected void deselectView (VisTable view) {
-		view.setBackground(style.background);
-	}
+    @Override
+    protected void deselectView(VisTable view) {
+        view.setBackground(style.background);
+    }
 
-	public static class SimpleListAdapterStyle {
-		public Drawable background;
-		public Drawable selection;
+    public static class SimpleListAdapterStyle {
+        public Drawable background;
+        public Drawable selection;
 
-		public SimpleListAdapterStyle () {
-		}
+        public SimpleListAdapterStyle() {
+        }
 
-		public SimpleListAdapterStyle (Drawable background, Drawable selection) {
-			this.background = background;
-			this.selection = selection;
-		}
+        public SimpleListAdapterStyle(Drawable background, Drawable selection) {
+            this.background = background;
+            this.selection = selection;
+        }
 
-		public SimpleListAdapterStyle (SimpleListAdapterStyle style) {
-			this.background = style.background;
-			this.selection = style.selection;
-		}
-	}
+        public SimpleListAdapterStyle(SimpleListAdapterStyle style) {
+            this.background = style.background;
+            this.selection = style.selection;
+        }
+    }
 }

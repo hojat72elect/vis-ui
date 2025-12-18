@@ -30,95 +30,96 @@ import com.kotcrab.vis.ui.widget.color.ColorPickerWidgetStyle;
 
 /**
  * Used to display channel color bars in color picker.
+ *
  * @author Kotcrab
  */
 public class ChannelBar extends ShaderImage {
-	public static final int MODE_ALPHA = 0;
+    public static final int MODE_ALPHA = 0;
 
-	public static final int MODE_R = 1;
-	public static final int MODE_G = 2;
-	public static final int MODE_B = 3;
+    public static final int MODE_R = 1;
+    public static final int MODE_G = 2;
+    public static final int MODE_B = 3;
 
-	public static final int MODE_H = 4;
-	public static final int MODE_S = 5;
-	public static final int MODE_V = 6;
+    public static final int MODE_H = 4;
+    public static final int MODE_S = 5;
+    public static final int MODE_V = 6;
 
-	protected ColorPickerWidgetStyle style;
-	private Sizes sizes;
+    protected ColorPickerWidgetStyle style;
+    private final Sizes sizes;
 
-	private int maxValue;
-	private int value;
-	private float selectorX;
+    private final int maxValue;
+    private int value;
+    private float selectorX;
 
-	private int mode;
-	private ChannelBarListener channelBarListener;
+    private final int mode;
+    private ChannelBarListener channelBarListener;
 
-	public ChannelBar (PickerCommons commons, int mode, int maxValue, ChangeListener changeListener) {
-		super(commons.getBarShader(mode), commons.whiteTexture);
-		this.style = commons.style;
-		this.sizes = commons.sizes;
-		this.mode = mode;
-		this.maxValue = maxValue;
+    public ChannelBar(PickerCommons commons, int mode, int maxValue, ChangeListener changeListener) {
+        super(commons.getBarShader(mode), commons.whiteTexture);
+        this.style = commons.style;
+        this.sizes = commons.sizes;
+        this.mode = mode;
+        this.maxValue = maxValue;
 
-		setTouchable(Touchable.enabled);
-		setValue(value);
-		addListener(changeListener);
+        setTouchable(Touchable.enabled);
+        setValue(value);
+        addListener(changeListener);
 
-		addListener(new InputListener() {
-			@Override
-			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				updateValueFromTouch(x);
-				return true;
-			}
+        addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                updateValueFromTouch(x);
+                return true;
+            }
 
-			@Override
-			public void touchDragged (InputEvent event, float x, float y, int pointer) {
-				updateValueFromTouch(x);
-			}
-		});
-	}
+            @Override
+            public void touchDragged(InputEvent event, float x, float y, int pointer) {
+                updateValueFromTouch(x);
+            }
+        });
+    }
 
-	@Override
-	public void draw (Batch batch, float parentAlpha) {
-		super.draw(batch, parentAlpha);
-		style.barSelector.draw(batch, getX() + selectorX - style.barSelector.getMinWidth() / 2, getY() - 1, style.barSelector.getMinWidth(), style.barSelector.getMinHeight());
-	}
+    @Override
+    public void draw(Batch batch, float parentAlpha) {
+        super.draw(batch, parentAlpha);
+        style.barSelector.draw(batch, getX() + selectorX - style.barSelector.getMinWidth() / 2, getY() - 1, style.barSelector.getMinWidth(), style.barSelector.getMinHeight());
+    }
 
-	public void setValue (int newValue) {
-		this.value = newValue;
-		if (value < 0) value = 0;
-		if (value > maxValue) value = maxValue;
+    public int getValue() {
+        return value;
+    }
 
-		selectorX = ((float) value / maxValue) * BasicColorPicker.BAR_WIDTH * sizes.scaleFactor;
-	}
+    public void setValue(int newValue) {
+        this.value = newValue;
+        if (value < 0) value = 0;
+        if (value > maxValue) value = maxValue;
 
-	public int getValue () {
-		return value;
-	}
+        selectorX = ((float) value / maxValue) * BasicColorPicker.BAR_WIDTH * sizes.scaleFactor;
+    }
 
-	private void updateValueFromTouch (float x) {
-		int newValue = (int) (x / BasicColorPicker.BAR_WIDTH * maxValue / sizes.scaleFactor);
-		setValue(newValue);
+    private void updateValueFromTouch(float x) {
+        int newValue = (int) (x / BasicColorPicker.BAR_WIDTH * maxValue / sizes.scaleFactor);
+        setValue(newValue);
 
-		ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
-		fire(changeEvent);
-		Pools.free(changeEvent);
-	}
+        ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
+        fire(changeEvent);
+        Pools.free(changeEvent);
+    }
 
-	@Override
-	protected void setShaderUniforms (ShaderProgram shader) {
-		shader.setUniformi("u_mode", mode);
-		channelBarListener.setShaderUniforms(shader);
-	}
+    @Override
+    protected void setShaderUniforms(ShaderProgram shader) {
+        shader.setUniformi("u_mode", mode);
+        channelBarListener.setShaderUniforms(shader);
+    }
 
-	public void setChannelBarListener (ChannelBarListener channelBarListener) {
-		this.channelBarListener = channelBarListener;
-	}
+    public void setChannelBarListener(ChannelBarListener channelBarListener) {
+        this.channelBarListener = channelBarListener;
+    }
 
-	public interface ChannelBarListener {
-		void updateFields ();
+    public interface ChannelBarListener {
+        void updateFields();
 
-		void setShaderUniforms (ShaderProgram shader);
-	}
+        void setShaderUniforms(ShaderProgram shader);
+    }
 }
 

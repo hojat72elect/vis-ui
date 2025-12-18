@@ -28,126 +28,125 @@ import com.badlogic.gdx.utils.SnapshotArray;
  * Children automatically overflow to next column when necessary.
  * <p>
  * Can be embedded in scroll pane however in that case scrolling in Y direction must be disabled.
+ *
  * @author Kotcrab
  * @since 1.0.0
  * @deprecated Deprecated since 1.4.7. Use {@link com.kotcrab.vis.ui.layout.FlowGroup} instead.
  */
 @Deprecated
 public class VerticalFlowGroup extends WidgetGroup {
-	private float prefWidth;
-	private float prefHeight;
-	private float lastPrefHeight;
-	private boolean sizeInvalid = true;
+    private float prefWidth;
+    private float prefHeight;
+    private float lastPrefHeight;
+    private boolean sizeInvalid = true;
 
-	private float spacing = 0;
+    private float spacing = 0;
 
-	public VerticalFlowGroup () {
-		setTouchable(Touchable.childrenOnly);
-	}
+    public VerticalFlowGroup() {
+        setTouchable(Touchable.childrenOnly);
+    }
 
-	public VerticalFlowGroup (float spacing) {
-		this.spacing = spacing;
-		setTouchable(Touchable.childrenOnly);
-	}
+    public VerticalFlowGroup(float spacing) {
+        this.spacing = spacing;
+        setTouchable(Touchable.childrenOnly);
+    }
 
-	private void computeSize () {
-		prefWidth = 0;
-		prefHeight = getHeight();
-		sizeInvalid = false;
+    private void computeSize() {
+        prefWidth = 0;
+        prefHeight = getHeight();
+        sizeInvalid = false;
 
-		SnapshotArray<Actor> children = getChildren();
+        SnapshotArray<Actor> children = getChildren();
 
-		float y = 0;
-		float columnWidth = 0;
+        float y = 0;
+        float columnWidth = 0;
 
-		for (int i = 0; i < children.size; i++) {
-			Actor child = children.get(i);
-			float width = child.getWidth();
-			float height = child.getHeight();
-			if (child instanceof Layout) {
-				Layout layout = (Layout) child;
-				width = layout.getPrefWidth();
-				height = layout.getPrefHeight();
-			}
+        for (int i = 0; i < children.size; i++) {
+            Actor child = children.get(i);
+            float width = child.getWidth();
+            float height = child.getHeight();
+            if (child instanceof Layout layout) {
+                width = layout.getPrefWidth();
+                height = layout.getPrefHeight();
+            }
 
-			if (y + height > getHeight()) {
-				y = 0;
-				prefWidth += columnWidth + spacing;
-				columnWidth = width;
-			} else {
-				columnWidth = Math.max(width, columnWidth);
-			}
+            if (y + height > getHeight()) {
+                y = 0;
+                prefWidth += columnWidth + spacing;
+                columnWidth = width;
+            } else {
+                columnWidth = Math.max(width, columnWidth);
+            }
 
-			y += height + spacing;
-		}
+            y += height + spacing;
+        }
 
-		//handle last column width
-		prefWidth += columnWidth + spacing;
-	}
+        //handle last column width
+        prefWidth += columnWidth + spacing;
+    }
 
-	@Override
-	public void layout () {
-		if (sizeInvalid) {
-			computeSize();
-			if (lastPrefHeight != prefHeight) {
-				lastPrefHeight = prefHeight;
-				invalidateHierarchy();
-			}
-		}
+    @Override
+    public void layout() {
+        if (sizeInvalid) {
+            computeSize();
+            if (lastPrefHeight != prefHeight) {
+                lastPrefHeight = prefHeight;
+                invalidateHierarchy();
+            }
+        }
 
-		SnapshotArray<Actor> children = getChildren();
+        SnapshotArray<Actor> children = getChildren();
 
-		float x = 0;
-		float y = getHeight();
-		float columnWidth = 0;
+        float x = 0;
+        float y = getHeight();
+        float columnWidth = 0;
 
-		for (int i = 0; i < children.size; i++) {
-			Actor child = children.get(i);
-			float width = child.getWidth();
-			float height = child.getHeight();
-			if (child instanceof Layout) {
-				Layout layout = (Layout) child;
-				width = layout.getPrefWidth();
-				height = layout.getPrefHeight();
-			}
+        for (int i = 0; i < children.size; i++) {
+            Actor child = children.get(i);
+            float width = child.getWidth();
+            float height = child.getHeight();
+            if (child instanceof Layout layout) {
+                width = layout.getPrefWidth();
+                height = layout.getPrefHeight();
+            }
 
-			if (y - height < 0) {
-				y = getHeight();
-				x += columnWidth + spacing;
-				columnWidth = width;
-			} else {
-				columnWidth = Math.max(width, columnWidth);
-			}
+            if (y - height < 0) {
+                y = getHeight();
+                x += columnWidth + spacing;
+                columnWidth = width;
+            } else {
+                columnWidth = Math.max(width, columnWidth);
+            }
 
-			child.setBounds(x, y - height, width, height);
-			y -= height + spacing;
-		}
-	}
+            child.setBounds(x, y - height, width, height);
+            y -= height + spacing;
+        }
+    }
 
-	public float getSpacing () {
-		return spacing;
-	}
+    public float getSpacing() {
+        return spacing;
+    }
 
-	public void setSpacing (float spacing) {
-		this.spacing = spacing;
-		invalidateHierarchy();
-	}
+    public void setSpacing(float spacing) {
+        this.spacing = spacing;
+        invalidateHierarchy();
+    }
 
-	@Override
-	public void invalidate () {
-		super.invalidate();
-		sizeInvalid = true;
-	}
+    @Override
+    public void invalidate() {
+        super.invalidate();
+        sizeInvalid = true;
+    }
 
-	@Override
-	public float getPrefWidth () {
-		if (sizeInvalid) computeSize();
-		return prefWidth;
-	}
+    @Override
+    public float getPrefWidth() {
+        if (sizeInvalid) computeSize();
+        return prefWidth;
+    }
 
-	@Override
-	public float getPrefHeight () {
-		if (sizeInvalid) computeSize();
-		return prefHeight;
-	}
+    @Override
+    public float getPrefHeight() {
+        if (sizeInvalid) computeSize();
+        return prefHeight;
+    }
 }

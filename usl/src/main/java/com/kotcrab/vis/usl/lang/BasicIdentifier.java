@@ -16,39 +16,40 @@
 
 package com.kotcrab.vis.usl.lang;
 
-/** Represents single identifier of USL lang, similar to json: "name: value" */
+/**
+ * Represents single identifier of USL lang, similar to json: "name: value"
+ */
 public class BasicIdentifier extends Identifier {
-	public String content;
+    public String content;
 
-	public BasicIdentifier () {
-	}
+    public BasicIdentifier() {
+    }
 
-	public BasicIdentifier (String name, String content) {
-		super(name);
-		this.content = content;
-	}
+    public BasicIdentifier(String name, String content) {
+        super(name);
+        this.content = content;
+    }
 
-	public BasicIdentifier (BasicIdentifier other) {
-		super(other);
-		this.content = other.content;
-	}
+    public BasicIdentifier(BasicIdentifier other) {
+        super(other);
+        this.content = other.content;
+    }
 
-	@Override
-	public boolean equals (Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		if (!super.equals(o)) return false;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
 
-		BasicIdentifier that = (BasicIdentifier) o;
+        BasicIdentifier that = (BasicIdentifier) o;
 
-		return content.equals(that.content);
+        return content.equals(that.content);
+    }
 
-	}
-
-	@Override
-	public int hashCode () {
-		int result = super.hashCode();
-		result = 31 * result + content.hashCode();
-		return result;
-	}
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + content.hashCode();
+        return result;
+    }
 }

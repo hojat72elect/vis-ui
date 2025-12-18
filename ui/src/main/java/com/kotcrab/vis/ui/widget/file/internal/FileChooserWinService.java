@@ -33,133 +33,131 @@ import java.util.concurrent.Executors;
 
 /**
  * Used to get system drive name. Only used on Windows.
+ *
  * @author Kotcrab
  */
 public class FileChooserWinService {
-	private static FileChooserWinService instance;
+    private static FileChooserWinService instance;
+    private final ExecutorService pool;
+    private final ObjectMap<File, String> nameCache = new ObjectMap<File, String>();
+    private final Map<File, ListenerSet> listeners = new HashMap<File, ListenerSet>();
+    private boolean shellFolderSupported = false;
+    private Method getShellFolderMethod;
+    private Method getShellFolderDisplayNameMethod;
 
-	private ObjectMap<File, String> nameCache = new ObjectMap<File, String>();
+    @SuppressWarnings("unchecked")
+    protected FileChooserWinService() {
+        pool = Executors.newFixedThreadPool(3, new ServiceThreadFactory("SystemDisplayNameGetter"));
 
-	private Map<File, ListenerSet> listeners = new HashMap<File, ListenerSet>();
-	private final ExecutorService pool;
+        try {
+            Class shellFolderClass = Class.forName("sun.awt.shell.ShellFolder");
+            getShellFolderMethod = shellFolderClass.getMethod("getShellFolder", File.class);
+            getShellFolderDisplayNameMethod = shellFolderClass.getMethod("getDisplayName");
+            shellFolderSupported = true;
+        } catch (ClassNotFoundException ignored) { //ShellFolder not supported on current JVM, ignoring
+        } catch (NoSuchMethodException ignored) {
+        }
 
-	private boolean shellFolderSupported = false;
-	private Method getShellFolderMethod;
-	private Method getShellFolderDisplayNameMethod;
+        File[] roots = File.listRoots();
 
-	public static synchronized FileChooserWinService getInstance () {
-		if (OsUtils.isWindows() == false) return null;
-		if (instance == null) instance = new FileChooserWinService();
-		return instance;
-	}
+        for (File root : roots) {
+            processRoot(root);
+        }
+    }
 
-	@SuppressWarnings("unchecked")
-	protected FileChooserWinService () {
-		pool = Executors.newFixedThreadPool(3, new ServiceThreadFactory("SystemDisplayNameGetter"));
+    public static synchronized FileChooserWinService getInstance() {
+        if (!OsUtils.isWindows()) return null;
+        if (instance == null) instance = new FileChooserWinService();
+        return instance;
+    }
 
-		try {
-			Class shellFolderClass = Class.forName("sun.awt.shell.ShellFolder");
-			getShellFolderMethod = shellFolderClass.getMethod("getShellFolder", File.class);
-			getShellFolderDisplayNameMethod = shellFolderClass.getMethod("getDisplayName");
-			shellFolderSupported = true;
-		} catch (ClassNotFoundException ignored) { //ShellFolder not supported on current JVM, ignoring
-		} catch (NoSuchMethodException ignored) {
-		}
+    private void processRoot(final File root) {
+        pool.execute(new Runnable() {
+            @Override
+            public void run() {
+                processResult(root, getSystemDisplayName(root));
+            }
+        });
+    }
 
-		File[] roots = File.listRoots();
+    private void processResult(final File root, final String name) {
+        Gdx.app.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                if (name != null)
+                    nameCache.put(root, name);
+                else
+                    nameCache.put(root, root.toString());
 
-		for (File root : roots) {
-			processRoot(root);
-		}
-	}
+                ListenerSet set = listeners.get(root);
+                if (set != null) set.notifyListeners(name);
+            }
+        });
+    }
 
-	private void processRoot (final File root) {
-		pool.execute(new Runnable() {
-			@Override
-			public void run () {
-				processResult(root, getSystemDisplayName(root));
-			}
-		});
-	}
+    public void addListener(File root, RootNameListener listener) {
+        String cachedName = nameCache.get(root);
+        if (cachedName != null) {
+            listener.setRootName(cachedName);
+            return;
+        }
 
-	private void processResult (final File root, final String name) {
-		Gdx.app.postRunnable(new Runnable() {
-			@Override
-			public void run () {
-				if (name != null)
-					nameCache.put(root, name);
-				else
-					nameCache.put(root, root.toString());
+        ListenerSet set = listeners.get(root);
 
-				ListenerSet set = listeners.get(root);
-				if (set != null) set.notifyListeners(name);
-			}
-		});
-	}
+        if (set == null) {
+            set = new ListenerSet();
+            listeners.put(root, set);
+        }
 
-	public void addListener (File root, RootNameListener listener) {
-		String cachedName = nameCache.get(root);
-		if (cachedName != null) {
-			listener.setRootName(cachedName);
-			return;
-		}
+        set.add(listener);
+        processRoot(root);
+    }
 
-		ListenerSet set = listeners.get(root);
+    private String getSystemDisplayName(File f) {
+        if (!shellFolderSupported) return null;
+        String name;
 
-		if (set == null) {
-			set = new ListenerSet();
-			listeners.put(root, set);
-		}
+        try {
+            //name = ShellFolder.getShellFolder(f).getDisplayName();
+            Object shellFolder = getShellFolderMethod.invoke(null, f);
+            name = (String) getShellFolderDisplayNameMethod.invoke(shellFolder);
+        } catch (InvocationTargetException e) {
+            return null;
+        } catch (IllegalAccessException e) {
+            return null;
+        }
 
-		set.add(listener);
-		processRoot(root);
-	}
+        if (name == null || name.length() == 0) {
+            name = f.getPath(); // the "/" directory
+        }
 
-	private String getSystemDisplayName (File f) {
-		if (shellFolderSupported == false) return null;
-		String name;
+        return name;
+    }
 
-		try {
-			//name = ShellFolder.getShellFolder(f).getDisplayName();
-			Object shellFolder = getShellFolderMethod.invoke(null, f);
-			name = (String) getShellFolderDisplayNameMethod.invoke(shellFolder);
-		} catch (InvocationTargetException e) {
-			return null;
-		} catch (IllegalAccessException e) {
-			return null;
-		}
+    public interface RootNameListener {
+        void setRootName(String newName);
+    }
 
-		if (name == null || name.length() == 0) {
-			name = f.getPath(); // the "/" directory
-		}
+    private static class ListenerSet {
+        Array<WeakReference<RootNameListener>> list = new Array<WeakReference<RootNameListener>>();
 
-		return name;
-	}
+        public void add(RootNameListener listener) {
+            list.add(new WeakReference<RootNameListener>(listener));
+        }
 
-	public interface RootNameListener {
-		void setRootName (String newName);
-	}
+        public void notifyListeners(String newName) {
+            Iterator<WeakReference<RootNameListener>> it = list.iterator();
 
-	private static class ListenerSet {
-		Array<WeakReference<RootNameListener>> list = new Array<WeakReference<RootNameListener>>();
+            while (it.hasNext()) {
+                RootNameListener listener = it.next().get();
 
-		public void add (RootNameListener listener) {
-			list.add(new WeakReference<RootNameListener>(listener));
-		}
+                if (listener == null) {
+                    it.remove();
+                    continue;
+                }
 
-		public void notifyListeners (String newName) {
-			Iterator<WeakReference<RootNameListener>> it = list.iterator();
-
-			while (it.hasNext()) {
-				RootNameListener listener = it.next().get();
-
-				if (listener == null) {
-					it.remove();
-					continue;
-				}
-
-				listener.setRootName(newName);
-			}
-		}
-	}
+                listener.setRootName(newName);
+            }
+        }
+    }
 }

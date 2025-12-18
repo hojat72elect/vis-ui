@@ -26,157 +26,158 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
  * Widget containing table that can be horizontally collapsed.
+ *
  * @author Kotcrab
  * @see CollapsibleWidget
  * @since 1.2.5
  */
 public class HorizontalCollapsibleWidget extends WidgetGroup {
-	private Table table;
+    private Table table;
 
-	private CollapseAction collapseAction = new CollapseAction();
-	private float collapseDuration = 0.3f;
-	private Interpolation collapseInterpolation = Interpolation.pow3Out;
+    private final CollapseAction collapseAction = new CollapseAction();
+    private final float collapseDuration = 0.3f;
+    private final Interpolation collapseInterpolation = Interpolation.pow3Out;
 
-	private boolean collapsed;
-	private boolean actionRunning;
+    private boolean collapsed;
+    private boolean actionRunning;
 
-	private float currentWidth;
+    private float currentWidth;
 
-	public HorizontalCollapsibleWidget () {
-	}
+    public HorizontalCollapsibleWidget() {
+    }
 
-	public HorizontalCollapsibleWidget (Table table) {
-		this(table, false);
-	}
+    public HorizontalCollapsibleWidget(Table table) {
+        this(table, false);
+    }
 
-	public HorizontalCollapsibleWidget (Table table, boolean collapsed) {
-		this.collapsed = collapsed;
-		this.table = table;
+    public HorizontalCollapsibleWidget(Table table, boolean collapsed) {
+        this.collapsed = collapsed;
+        this.table = table;
 
-		updateTouchable();
+        updateTouchable();
 
-		if (table != null) addActor(table);
-	}
+        if (table != null) addActor(table);
+    }
 
-	public void setCollapsed (boolean collapse, boolean withAnimation) {
-		this.collapsed = collapse;
-		updateTouchable();
+    public void setCollapsed(boolean collapse, boolean withAnimation) {
+        this.collapsed = collapse;
+        updateTouchable();
 
-		if (table == null) return;
+        if (table == null) return;
 
-		actionRunning = true;
+        actionRunning = true;
 
-		if (withAnimation) {
-			collapseAction.reset();
-			collapseAction.setStart(currentWidth);
-			collapseAction.setEnd(collapse ? 0f : table.getPrefWidth());
-			collapseAction.setDuration(collapseDuration);
-			collapseAction.setInterpolation(collapseInterpolation);
-			addAction(collapseAction);
-		} else {
-			if (collapse) {
-				currentWidth = 0;
-				collapsed = true;
-			} else {
-				currentWidth = table.getPrefWidth();
-				collapsed = false;
-			}
+        if (withAnimation) {
+            collapseAction.reset();
+            collapseAction.setStart(currentWidth);
+            collapseAction.setEnd(collapse ? 0f : table.getPrefWidth());
+            collapseAction.setDuration(collapseDuration);
+            collapseAction.setInterpolation(collapseInterpolation);
+            addAction(collapseAction);
+        } else {
+            if (collapse) {
+                currentWidth = 0;
+                collapsed = true;
+            } else {
+                currentWidth = table.getPrefWidth();
+                collapsed = false;
+            }
 
-			actionRunning = false;
-			invalidateHierarchy();
-		}
-	}
+            actionRunning = false;
+            invalidateHierarchy();
+        }
+    }
 
-	public void setCollapsed (boolean collapse) {
-		setCollapsed(collapse, true);
-	}
+    public boolean isCollapsed() {
+        return collapsed;
+    }
 
-	public boolean isCollapsed () {
-		return collapsed;
-	}
+    public void setCollapsed(boolean collapse) {
+        setCollapsed(collapse, true);
+    }
 
-	private void updateTouchable () {
-		if (collapsed)
-			setTouchable(Touchable.disabled);
-		else
-			setTouchable(Touchable.enabled);
-	}
+    private void updateTouchable() {
+        if (collapsed)
+            setTouchable(Touchable.disabled);
+        else
+            setTouchable(Touchable.enabled);
+    }
 
-	@Override
-	public void draw (Batch batch, float parentAlpha) {
-		if (currentWidth > 1 && getX() + currentWidth > 1) {
-			if (actionRunning) {
-				batch.flush();
-				boolean clipEnabled = clipBegin(getX(), getY(), currentWidth, getHeight());
+    @Override
+    public void draw(Batch batch, float parentAlpha) {
+        if (currentWidth > 1 && getX() + currentWidth > 1) {
+            if (actionRunning) {
+                batch.flush();
+                boolean clipEnabled = clipBegin(getX(), getY(), currentWidth, getHeight());
 
-				super.draw(batch, parentAlpha);
+                super.draw(batch, parentAlpha);
 
-				batch.flush();
-				if (clipEnabled) clipEnd();
-			} else {
-				super.draw(batch, parentAlpha);
-			}
-		}
-	}
+                batch.flush();
+                if (clipEnabled) clipEnd();
+            } else {
+                super.draw(batch, parentAlpha);
+            }
+        }
+    }
 
-	@Override
-	public void layout () {
-		if (table == null) return;
+    @Override
+    public void layout() {
+        if (table == null) return;
 
-		table.setBounds(0, 0, table.getPrefWidth(), table.getPrefHeight());
+        table.setBounds(0, 0, table.getPrefWidth(), table.getPrefHeight());
 
-		if (actionRunning == false) {
-			if (collapsed)
-				currentWidth = 0;
-			else
-				currentWidth = table.getPrefWidth();
-		}
-	}
+        if (!actionRunning) {
+            if (collapsed)
+                currentWidth = 0;
+            else
+                currentWidth = table.getPrefWidth();
+        }
+    }
 
-	@Override
-	public float getPrefHeight () {
-		return table == null ? 0 : table.getPrefHeight();
-	}
+    @Override
+    public float getPrefHeight() {
+        return table == null ? 0 : table.getPrefHeight();
+    }
 
-	@Override
-	public float getPrefWidth () {
-		if (table == null) return 0;
+    @Override
+    public float getPrefWidth() {
+        if (table == null) return 0;
 
-		if (actionRunning == false) {
-			if (collapsed)
-				return 0;
-			else
-				return table.getPrefWidth();
-		}
+        if (!actionRunning) {
+            if (collapsed)
+                return 0;
+            else
+                return table.getPrefWidth();
+        }
 
-		return currentWidth;
-	}
+        return currentWidth;
+    }
 
-	public void setTable (Table table) {
-		this.table = table;
-		clearChildren();
-		addActor(table);
-	}
+    public void setTable(Table table) {
+        this.table = table;
+        clearChildren();
+        addActor(table);
+    }
 
-	@Override
-	protected void childrenChanged () {
-		super.childrenChanged();
-		if (getChildren().size > 1) throw new GdxRuntimeException("Only one actor can be added to CollapsibleWidget");
-	}
+    @Override
+    protected void childrenChanged() {
+        super.childrenChanged();
+        if (getChildren().size > 1) throw new GdxRuntimeException("Only one actor can be added to CollapsibleWidget");
+    }
 
-	private class CollapseAction extends FloatAction {
+    private class CollapseAction extends FloatAction {
 
-		@Override
-		protected void update (float percent) {
-			super.update(percent);
-			currentWidth = getValue();
+        @Override
+        protected void update(float percent) {
+            super.update(percent);
+            currentWidth = getValue();
 
-			if (percent == 1) {
-				actionRunning = false;
-				collapsed = currentWidth == 0;
-			}
+            if (percent == 1) {
+                actionRunning = false;
+                collapsed = currentWidth == 0;
+            }
 
-			invalidateHierarchy();
-		}
-	}
+            invalidateHierarchy();
+        }
+    }
 }

@@ -25,20 +25,23 @@ import com.kotcrab.vis.ui.widget.file.FileChooser.SelectionMode;
  * {@link #selected(FileHandle)} method. If user picked more than one file (note that chooser must be in multiple select
  * mode for that to happen, see {@link FileChooser#setSelectionMode(SelectionMode)}), that method
  * will be called only for first selected file and remaining files will be ignored.
+ *
  * @author Kotcrab
  * @since 1.0.0
  */
 public abstract class SingleFileChooserListener implements FileChooserListener {
-	@Override
-	public final void selected (Array<FileHandle> files) {
-		selected(files.first());
-	}
+    @Override
+    public final void selected(Array<FileHandle> files) {
+        selected(files.first());
+    }
 
-	/** Called for first file in selection. See {@link SingleFileChooserListener}. */
-	protected abstract void selected (FileHandle file);
+    /**
+     * Called for first file in selection. See {@link SingleFileChooserListener}.
+     */
+    protected abstract void selected(FileHandle file);
 
-	@Override
-	public void canceled () {
+    @Override
+    public void canceled() {
 
-	}
+    }
 }

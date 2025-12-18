@@ -28,46 +28,47 @@ import com.kotcrab.vis.ui.VisUI;
 
 /**
  * Compatible with {@link Image}. Does not provide additional features.
+ *
  * @author Kotcrab
  * @see Image
  */
 public class VisImage extends Image {
-	public VisImage () {
-	}
+    public VisImage() {
+    }
 
-	public VisImage (NinePatch patch) {
-		super(patch);
-	}
+    public VisImage(NinePatch patch) {
+        super(patch);
+    }
 
-	public VisImage (TextureRegion region) {
-		super(region);
-	}
+    public VisImage(TextureRegion region) {
+        super(region);
+    }
 
-	public VisImage (Texture texture) {
-		super(texture);
-	}
+    public VisImage(Texture texture) {
+        super(texture);
+    }
 
-	public VisImage (String drawableName) {
-		super(VisUI.getSkin(), drawableName);
-	}
+    public VisImage(String drawableName) {
+        super(VisUI.getSkin(), drawableName);
+    }
 
-	public VisImage (Skin skin, String drawableName) {
-		super(skin, drawableName);
-	}
+    public VisImage(Skin skin, String drawableName) {
+        super(skin, drawableName);
+    }
 
-	public VisImage (Drawable drawable) {
-		super(drawable);
-	}
+    public VisImage(Drawable drawable) {
+        super(drawable);
+    }
 
-	public VisImage (Drawable drawable, Scaling scaling) {
-		super(drawable, scaling);
-	}
+    public VisImage(Drawable drawable, Scaling scaling) {
+        super(drawable, scaling);
+    }
 
-	public VisImage (Drawable drawable, Scaling scaling, int align) {
-		super(drawable, scaling, align);
-	}
+    public VisImage(Drawable drawable, Scaling scaling, int align) {
+        super(drawable, scaling, align);
+    }
 
-	public void setDrawable (Texture texture) {
-		setDrawable(new TextureRegionDrawable(new TextureRegion(texture)));
-	}
+    public void setDrawable(Texture texture) {
+        setDrawable(new TextureRegionDrawable(new TextureRegion(texture)));
+    }
 }

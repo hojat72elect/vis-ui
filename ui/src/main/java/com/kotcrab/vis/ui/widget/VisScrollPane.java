@@ -22,19 +22,20 @@ import com.kotcrab.vis.ui.VisUI;
 
 /**
  * Compatible with {@link ScrollPane}. Does not provide additional features.
+ *
  * @author Kotcrab
  * @see ScrollPane
  */
 public class VisScrollPane extends ScrollPane {
-	public VisScrollPane (Actor widget, ScrollPaneStyle style) {
-		super(widget, style);
-	}
+    public VisScrollPane(Actor widget, ScrollPaneStyle style) {
+        super(widget, style);
+    }
 
-	public VisScrollPane (Actor widget, String styleName) {
-		super(widget, VisUI.getSkin(), styleName);
-	}
+    public VisScrollPane(Actor widget, String styleName) {
+        super(widget, VisUI.getSkin(), styleName);
+    }
 
-	public VisScrollPane (Actor widget) {
-		super(widget, VisUI.getSkin(), "list");
-	}
+    public VisScrollPane(Actor widget) {
+        super(widget, VisUI.getSkin(), "list");
+    }
 }

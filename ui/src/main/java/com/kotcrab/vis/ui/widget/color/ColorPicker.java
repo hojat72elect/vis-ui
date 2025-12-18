@@ -16,6 +16,11 @@
 
 package com.kotcrab.vis.ui.widget.color;
 
+import static com.kotcrab.vis.ui.widget.color.internal.ColorPickerText.CANCEL;
+import static com.kotcrab.vis.ui.widget.color.internal.ColorPickerText.OK;
+import static com.kotcrab.vis.ui.widget.color.internal.ColorPickerText.RESTORE;
+import static com.kotcrab.vis.ui.widget.color.internal.ColorPickerText.TITLE;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -28,12 +33,11 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.kotcrab.vis.ui.widget.VisWindow;
 
-import static com.kotcrab.vis.ui.widget.color.internal.ColorPickerText.*;
-
 /**
  * Color Picker dialog, allows user to select color. ColorPicker is relatively heavy dialog and should be reused whenever possible.
  * This dialog must be disposed when no longer needed! ColorPicker will be centered on screen after adding to Stage
  * use {@link #setCenterOnAdd(boolean)} to change this.
+ *
  * @author Kotcrab
  * @see ColorPicker
  * @see BasicColorPicker
@@ -41,167 +45,169 @@ import static com.kotcrab.vis.ui.widget.color.internal.ColorPickerText.*;
  * @since 0.6.0
  */
 public class ColorPicker extends VisWindow implements Disposable {
-	private ExtendedColorPicker picker;
+    private final ExtendedColorPicker picker;
 
-	private ColorPickerListener listener;
+    private ColorPickerListener listener;
 
-	private VisTextButton restoreButton;
-	private VisTextButton cancelButton;
-	private VisTextButton okButton;
+    private VisTextButton restoreButton;
+    private VisTextButton cancelButton;
+    private VisTextButton okButton;
 
-	private boolean closeAfterPickingFinished = true;
+    private boolean closeAfterPickingFinished = true;
 
-	private boolean fadeOutDueToCanceled;
+    private boolean fadeOutDueToCanceled;
 
-	public ColorPicker () {
-		this((String) null);
-	}
+    public ColorPicker() {
+        this((String) null);
+    }
 
-	public ColorPicker (String title) {
-		this("default", title, null);
-	}
+    public ColorPicker(String title) {
+        this("default", title, null);
+    }
 
-	public ColorPicker (String title, ColorPickerListener listener) {
-		this("default", title, listener);
-	}
+    public ColorPicker(String title, ColorPickerListener listener) {
+        this("default", title, listener);
+    }
 
-	public ColorPicker (ColorPickerListener listener) {
-		this("default", null, listener);
-	}
+    public ColorPicker(ColorPickerListener listener) {
+        this("default", null, listener);
+    }
 
-	public ColorPicker (String styleName, String title, ColorPickerListener listener) {
-		super(title != null ? title : "", VisUI.getSkin().get(styleName, ColorPickerStyle.class));
-		this.listener = listener;
+    public ColorPicker(String styleName, String title, ColorPickerListener listener) {
+        super(title != null ? title : "", VisUI.getSkin().get(styleName, ColorPickerStyle.class));
+        this.listener = listener;
 
-		ColorPickerStyle style = (ColorPickerStyle) getStyle();
+        ColorPickerStyle style = (ColorPickerStyle) getStyle();
 
-		if (title == null) getTitleLabel().setText(TITLE.get());
+        if (title == null) getTitleLabel().setText(TITLE.get());
 
-		setModal(true);
-		setMovable(true);
+        setModal(true);
+        setMovable(true);
 
-		addCloseButton();
-		closeOnEscape();
+        addCloseButton();
+        closeOnEscape();
 
-		picker = new ExtendedColorPicker(style.pickerStyle, listener);
+        picker = new ExtendedColorPicker(style.pickerStyle, listener);
 
-		add(picker);
-		row();
-		add(createButtons()).pad(3).right().expandX().colspan(3);
+        add(picker);
+        row();
+        add(createButtons()).pad(3).right().expandX().colspan(3);
 
-		pack();
-		centerWindow();
+        pack();
+        centerWindow();
 
-		createListeners();
-	}
+        createListeners();
+    }
 
-	private VisTable createButtons () {
-		ButtonBar buttonBar = new ButtonBar();
-		buttonBar.setIgnoreSpacing(true);
-		buttonBar.setButton(ButtonType.LEFT, restoreButton = new VisTextButton(RESTORE.get()));
-		buttonBar.setButton(ButtonType.OK, okButton = new VisTextButton(OK.get()));
-		buttonBar.setButton(ButtonType.CANCEL, cancelButton = new VisTextButton(CANCEL.get()));
-		return buttonBar.createTable();
-	}
+    private VisTable createButtons() {
+        ButtonBar buttonBar = new ButtonBar();
+        buttonBar.setIgnoreSpacing(true);
+        buttonBar.setButton(ButtonType.LEFT, restoreButton = new VisTextButton(RESTORE.get()));
+        buttonBar.setButton(ButtonType.OK, okButton = new VisTextButton(OK.get()));
+        buttonBar.setButton(ButtonType.CANCEL, cancelButton = new VisTextButton(CANCEL.get()));
+        return buttonBar.createTable();
+    }
 
-	private void createListeners () {
-		restoreButton.addListener(new ChangeListener() {
-			@Override
-			public void changed (ChangeEvent event, Actor actor) {
-				picker.restoreLastColor();
-			}
-		});
+    private void createListeners() {
+        restoreButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                picker.restoreLastColor();
+            }
+        });
 
-		okButton.addListener(new ChangeListener() {
-			@Override
-			public void changed (ChangeEvent event, Actor actor) {
-				if (listener != null) listener.finished(new Color(picker.color));
-				setColor(picker.color);
-				if (closeAfterPickingFinished) fadeOut();
-			}
-		});
+        okButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if (listener != null) listener.finished(new Color(picker.color));
+                setColor(picker.color);
+                if (closeAfterPickingFinished) fadeOut();
+            }
+        });
 
-		cancelButton.addListener(new ChangeListener() {
-			@Override
-			public void changed (ChangeEvent event, Actor actor) {
-				fadeOutDueToCanceled = true;
-				close();
-			}
-		});
-	}
+        cancelButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                fadeOutDueToCanceled = true;
+                close();
+            }
+        });
+    }
 
-	@Override
-	protected void setStage (Stage stage) {
-		super.setStage(stage);
-		if (stage == null && fadeOutDueToCanceled) {
-			fadeOutDueToCanceled = false;
-			setColor(picker.oldColor);
-		}
-	}
+    @Override
+    protected void setStage(Stage stage) {
+        super.setStage(stage);
+        if (stage == null && fadeOutDueToCanceled) {
+            fadeOutDueToCanceled = false;
+            setColor(picker.oldColor);
+        }
+    }
 
-	/**
-	 * Controls whether to fade out color picker after users finished color picking and has pressed OK button. If
-	 * this is set to false picker won't close after pressing OK button. Default is true.
-	 * Note that by default picker is a modal window so might also want to call {@code colorPicker.setModal(false)} to
-	 * disable it.
-	 */
-	public void setCloseAfterPickingFinished (boolean closeAfterPickingFinished) {
-		this.closeAfterPickingFinished = closeAfterPickingFinished;
-	}
+    /**
+     * Controls whether to fade out color picker after users finished color picking and has pressed OK button. If
+     * this is set to false picker won't close after pressing OK button. Default is true.
+     * Note that by default picker is a modal window so might also want to call {@code colorPicker.setModal(false)} to
+     * disable it.
+     */
+    public void setCloseAfterPickingFinished(boolean closeAfterPickingFinished) {
+        this.closeAfterPickingFinished = closeAfterPickingFinished;
+    }
 
-	@Override
-	protected void close () {
-		if (listener != null) listener.canceled(picker.oldColor);
-		super.close();
-	}
+    @Override
+    protected void close() {
+        if (listener != null) listener.canceled(picker.oldColor);
+        super.close();
+    }
 
-	@Override
-	public void dispose () {
-		picker.dispose();
-	}
+    @Override
+    public void dispose() {
+        picker.dispose();
+    }
 
-	/** @return internal dialog color picker */
-	public ExtendedColorPicker getPicker () {
-		return picker;
-	}
+    /**
+     * @return internal dialog color picker
+     */
+    public ExtendedColorPicker getPicker() {
+        return picker;
+    }
 
-	// ColorPicker delegates
+    // ColorPicker delegates
 
-	public boolean isShowHexFields () {
-		return picker.isShowHexFields();
-	}
+    public boolean isShowHexFields() {
+        return picker.isShowHexFields();
+    }
 
-	public void setShowHexFields (boolean showHexFields) {
-		picker.setShowHexFields(showHexFields);
-	}
+    public void setShowHexFields(boolean showHexFields) {
+        picker.setShowHexFields(showHexFields);
+    }
 
-	public boolean isDisposed () {
-		return picker.isDisposed();
-	}
+    public boolean isDisposed() {
+        return picker.isDisposed();
+    }
 
-	public void setAllowAlphaEdit (boolean allowAlphaEdit) {
-		picker.setAllowAlphaEdit(allowAlphaEdit);
-	}
+    public boolean isAllowAlphaEdit() {
+        return picker.isAllowAlphaEdit();
+    }
 
-	public boolean isAllowAlphaEdit () {
-		return picker.isAllowAlphaEdit();
-	}
+    public void setAllowAlphaEdit(boolean allowAlphaEdit) {
+        picker.setAllowAlphaEdit(allowAlphaEdit);
+    }
 
-	public void restoreLastColor () {
-		picker.restoreLastColor();
-	}
+    public void restoreLastColor() {
+        picker.restoreLastColor();
+    }
 
-	@Override
-	public void setColor (Color newColor) {
-		picker.setColor(newColor);
-	}
+    @Override
+    public void setColor(Color newColor) {
+        picker.setColor(newColor);
+    }
 
-	public void setListener (ColorPickerListener listener) {
-		this.listener = listener;
-		picker.setListener(listener);
-	}
+    public ColorPickerListener getListener() {
+        return picker.getListener();
+    }
 
-	public ColorPickerListener getListener () {
-		return picker.getListener();
-	}
+    public void setListener(ColorPickerListener listener) {
+        this.listener = listener;
+        picker.setListener(listener);
+    }
 }

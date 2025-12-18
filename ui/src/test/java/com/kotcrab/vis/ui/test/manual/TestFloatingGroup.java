@@ -26,51 +26,51 @@ import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.layout.FloatingGroup;
 
 class TestFloatingGroup extends ApplicationAdapter {
-	private Stage stage;
+    private Stage stage;
 
-	@Override
-	public void create () {
-		VisUI.load();
+    @Override
+    public void create() {
+        VisUI.load();
 
-		stage = new Stage(new ScreenViewport());
-		final Table root = new Table();
-		root.setFillParent(true);
-		stage.addActor(root);
+        stage = new Stage(new ScreenViewport());
+        final Table root = new Table();
+        root.setFillParent(true);
+        stage.addActor(root);
 
-		TestWindow window = new TestWindow();
-		TestCollapsible collapsible = new TestCollapsible();
-		window.setKeepWithinParent(true);
-		window.setPosition(110, 110);
-		collapsible.setKeepWithinParent(true);
-		collapsible.setPosition(200, 200);
+        TestWindow window = new TestWindow();
+        TestCollapsible collapsible = new TestCollapsible();
+        window.setKeepWithinParent(true);
+        window.setPosition(110, 110);
+        collapsible.setKeepWithinParent(true);
+        collapsible.setPosition(200, 200);
 
-		FloatingGroup floatingGroup = new FloatingGroup(1000, 600);
-		floatingGroup.addActor(window);
-		floatingGroup.addActor(collapsible);
+        FloatingGroup floatingGroup = new FloatingGroup(1000, 600);
+        floatingGroup.addActor(window);
+        floatingGroup.addActor(collapsible);
 
-		root.debugAll();
-		root.left().bottom();
-		root.add(floatingGroup).padLeft(100).padBottom(100);
+        root.debugAll();
+        root.left().bottom();
+        root.add(floatingGroup).padLeft(100).padBottom(100);
 
-		Gdx.input.setInputProcessor(stage);
-	}
+        Gdx.input.setInputProcessor(stage);
+    }
 
-	@Override
-	public void resize (int width, int height) {
-		if (width == 0 && height == 0) return;
-		stage.getViewport().update(width, height, true);
-	}
+    @Override
+    public void resize(int width, int height) {
+        if (width == 0 && height == 0) return;
+        stage.getViewport().update(width, height, true);
+    }
 
-	@Override
-	public void render () {
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
-		stage.draw();
-	}
+    @Override
+    public void render() {
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
+        stage.draw();
+    }
 
-	@Override
-	public void dispose () {
-		VisUI.dispose();
-		stage.dispose();
-	}
+    @Override
+    public void dispose() {
+        VisUI.dispose();
+        stage.dispose();
+    }
 }

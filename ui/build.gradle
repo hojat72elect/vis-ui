@@ -1,5 +1,5 @@
 archivesBaseName = "vis-ui"
-sourceCompatibility = 1.8
+sourceCompatibility = 16
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 dependencies {
@@ -14,7 +14,7 @@ dependencies {
 }
 
 compileTestJava {
-    targetCompatibility = 1.8
+    targetCompatibility = 16
 }
 
 test {

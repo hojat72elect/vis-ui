@@ -23,28 +23,29 @@ import com.kotcrab.vis.ui.widget.VisImage;
 
 /**
  * Allow to render standard {@link VisImage} with shader. Shaders uniforms can be set in {@link #setShaderUniforms(ShaderProgram)}
+ *
  * @author Kotcrab
  */
 public class ShaderImage extends VisImage {
-	private ShaderProgram shader;
+    private final ShaderProgram shader;
 
-	public ShaderImage (ShaderProgram shader, Texture texture) {
-		super(texture);
-		this.shader = shader;
-	}
+    public ShaderImage(ShaderProgram shader, Texture texture) {
+        super(texture);
+        this.shader = shader;
+    }
 
-	@Override
-	public void draw (Batch batch, float parentAlpha) {
-		ShaderProgram originalShader = batch.getShader();
-		batch.setShader(shader);
-		setShaderUniforms(shader);
+    @Override
+    public void draw(Batch batch, float parentAlpha) {
+        ShaderProgram originalShader = batch.getShader();
+        batch.setShader(shader);
+        setShaderUniforms(shader);
 
-		super.draw(batch, parentAlpha);
+        super.draw(batch, parentAlpha);
 
-		batch.setShader(originalShader);
-	}
+        batch.setShader(originalShader);
+    }
 
-	protected void setShaderUniforms (ShaderProgram shader) {
+    protected void setShaderUniforms(ShaderProgram shader) {
 
-	}
+    }
 }
