@@ -1,4 +1,3 @@
-
 package com.kotcrab.vis.usl.test;
 
 import com.kotcrab.vis.usl.USL;
