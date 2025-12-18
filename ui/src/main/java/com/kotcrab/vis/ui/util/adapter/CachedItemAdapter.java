@@ -1,18 +1,3 @@
-/*
- * Copyright 2014-2017 See AUTHORS file.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 
 package com.kotcrab.vis.ui.util.adapter;
 
@@ -24,8 +9,7 @@ import com.badlogic.gdx.utils.ObjectMap;
  * should be created and when old view should be updated (see {@link #createView(Object)} and {@link #updateView(Actor, Object)}).
  * Internal cache is not cleared automatically and obsolete entries must be removed manually.
  *
- * @author Kotcrab
- * @since 1.0.0
+ *  * @since 1.0.0
  */
 public abstract class CachedItemAdapter<ItemT, ViewT extends Actor> implements ItemAdapter<ItemT> {
     private final ObjectMap<ItemT, ViewT> views = new ObjectMap<ItemT, ViewT>();

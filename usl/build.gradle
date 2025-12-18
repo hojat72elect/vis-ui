@@ -1,5 +1,5 @@
 archivesBaseName = "vis-usl"
-sourceCompatibility = 1.8
+sourceCompatibility = 16
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 dependencies {

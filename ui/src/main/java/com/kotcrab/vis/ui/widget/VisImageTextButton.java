@@ -1,18 +1,3 @@
-/*
- * Copyright 2014-2017 See AUTHORS file.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 
 package com.kotcrab.vis.ui.widget;
 
@@ -49,9 +34,7 @@ import com.kotcrab.vis.ui.widget.VisTextButton.VisTextButtonStyle;
  * When listening for button press {@link ChangeListener} should be always preferred (instead of {@link ClickListener}).
  * {@link ClickListener} does not support disabling button and will still report button presses.
  *
- * @author Nathan Sweet
- * @author Kotcrab
- * @see ImageButton
+ *  *  * @see ImageButton
  * @see TextButton
  * @see Button
  */
@@ -296,8 +279,7 @@ public class VisImageTextButton extends Button implements Focusable, BorderOwner
     /**
      * The style for an image text button, see {@link ImageTextButton}.
      *
-     * @author Nathan Sweet
-     */
+     *      */
     static public class VisImageTextButtonStyle extends VisTextButtonStyle {
         /**
          * Optional.

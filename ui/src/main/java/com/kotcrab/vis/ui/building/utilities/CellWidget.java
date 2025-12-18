@@ -1,18 +1,3 @@
-/*
- * Copyright 2014-2017 See AUTHORS file.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 
 package com.kotcrab.vis.ui.building.utilities;
 
@@ -26,8 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
  * CenteredTableBuilder, which tries to keep all widgets centered by setting expansion and alignment of some
  * cells).
  *
- * @author MJ
- */
+ *  */
 public class CellWidget<Widget extends Actor> {
     /**
      * Contains nulled actor.
@@ -174,8 +158,7 @@ public class CellWidget<Widget extends Actor> {
     /**
      * Allows to set the CellWidget's data. All setter methods return this for chaining.
      *
-     * @author MJ
-     */
+     *      */
     public static class CellWidgetBuilder<Widget extends Actor> {
         private Actor widget;
         private Padding padding;

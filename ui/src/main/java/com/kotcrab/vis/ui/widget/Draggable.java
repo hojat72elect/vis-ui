@@ -1,18 +1,3 @@
-/*
- * Copyright 2014-2017 See AUTHORS file.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 
 package com.kotcrab.vis.ui.widget;
 
@@ -36,8 +21,7 @@ import java.util.Iterator;
 /**
  * Draws copies of dragged actors which have this listener attached.
  *
- * @author MJ
- * @since 0.9.3
+ *  * @since 0.9.3
  */
 public class Draggable extends InputListener {
     private static final Vector2 MIMIC_COORDINATES = new Vector2();
@@ -501,8 +485,7 @@ public class Draggable extends InputListener {
     /**
      * Allows to control {@link Draggable} behavior.
      *
-     * @author MJ
-     * @since 0.9.3
+     *      * @since 0.9.3
      */
     public interface DragListener {
         /**
@@ -541,8 +524,7 @@ public class Draggable extends InputListener {
     /**
      * Default, empty implementation of {@link DragListener}. Approves all drag requests.
      *
-     * @author MJ
-     * @since 0.9.3
+     *      * @since 0.9.3
      */
     public static class DragAdapter implements DragListener {
         @Override
@@ -563,8 +545,7 @@ public class Draggable extends InputListener {
     /**
      * Draws the chosen actor with modified alpha value in a custom position. Clears mimicked actor upon removing from the stage.
      *
-     * @author MJ
-     * @since 0.9.3
+     *      * @since 0.9.3
      */
     public static class MimicActor extends Actor {
         private static final Vector2 LAST_POSITION = new Vector2();

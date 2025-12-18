@@ -32,8 +32,7 @@ import com.badlogic.gdx.utils.SnapshotArray;
  *   <li>When even the first child does not fit its row/column, space is no longer placed before it.</li>
  * </ul>
  *
- * @author ccmb2r
- * @since 1.4.7
+ *  * @since 1.4.7
  */
 public class FlowGroup extends WidgetGroup {
     private static final float DEFAULT_SPACING = 0;

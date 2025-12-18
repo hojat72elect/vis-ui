@@ -1,18 +1,3 @@
-/*
- * Copyright 2014-2017 See AUTHORS file.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 
 package com.kotcrab.vis.ui.widget;
 
@@ -33,8 +18,7 @@ import com.kotcrab.vis.ui.util.CursorManager;
  * Simple LinkLabel allows to create label with clickable link and underline on mouse over. Link can have custom text.
  * By default clicking link will open it in default browser, this can be changed by settings label listener.
  *
- * @author Kotcrab
- * @since 0.7.2
+ *  * @since 0.7.2
  */
 public class LinkLabel extends VisLabel {
     static private final Color tempColor = new Color();

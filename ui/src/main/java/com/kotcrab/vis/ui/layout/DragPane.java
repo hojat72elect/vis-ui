@@ -1,18 +1,3 @@
-/*
- * Copyright 2014-2017 See AUTHORS file.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 
 package com.kotcrab.vis.ui.layout;
 
@@ -40,8 +25,7 @@ import com.kotcrab.vis.ui.widget.Draggable.DragListener;
  * {@link #setDraggable(Draggable)} method, as it will attach the listener to all its children, making them all draggable. If you
  * want to filter widgets accepted by this pane, use {@link #setListener(DragPaneListener)} method.
  *
- * @author MJ
- * @see #setDraggable(Draggable)
+ *  * @see #setDraggable(Draggable)
  * @see #setListener(DragPaneListener)
  * @since 0.9.3
  */
@@ -395,8 +379,7 @@ public class DragPane extends Container<WidgetGroup> {
     /**
      * Allows to select children added to the group.
      *
-     * @author MJ
-     * @since 0.9.3
+     *      * @since 0.9.3
      */
     public interface DragPaneListener {
         /**
@@ -415,8 +398,7 @@ public class DragPane extends Container<WidgetGroup> {
          * When actors are dragged into the {@link DragPane}, they are accepted and added into the pane only if their direct parent
          * is the pane itself.
          *
-         * @author MJ
-         * @since 0.9.3
+         *          * @since 0.9.3
          */
         class AcceptOwnChildren implements DragPaneListener {
             @Override
@@ -428,8 +410,7 @@ public class DragPane extends Container<WidgetGroup> {
         /**
          * Limits {@link DragPane} children amount to a certain number. Never rejects own children.
          *
-         * @author MJ
-         * @since 0.9.3
+         *          * @since 0.9.3
          */
         class LimitChildren implements DragPaneListener {
             private final int max;
@@ -452,8 +433,7 @@ public class DragPane extends Container<WidgetGroup> {
     /**
      * Default {@link DragListener} implementation. Implements {@link DragPane} behavior.
      *
-     * @author MJ
-     * @since 0.9.3
+     *      * @since 0.9.3
      */
     public static class DefaultDragListener implements DragListener {
         /**
@@ -723,8 +703,7 @@ public class DragPane extends Container<WidgetGroup> {
         /**
          * Contains basic {@link DefaultDragListener} behaviors, allowing to modify the listener without extending it.
          *
-         * @author MJ
-         * @since 0.9.3
+         *          * @since 0.9.3
          */
         public enum DefaultPolicy implements Policy {
             /**
@@ -750,8 +729,7 @@ public class DragPane extends Container<WidgetGroup> {
         /**
          * Determines behavior of {@link DefaultDragListener}.
          *
-         * @author MJ
-         * @since 0.9.3
+         *          * @since 0.9.3
          */
         public interface Policy {
             /**

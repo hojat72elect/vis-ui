@@ -1,18 +1,3 @@
-/*
- * Copyright 2014-2017 See AUTHORS file.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 
 package com.kotcrab.vis.ui.widget.tabbedpane;
 
@@ -24,8 +9,7 @@ import com.badlogic.gdx.utils.Disposable;
  * dialog 'do you want to save changes' before closing. Tab can be also closeable by user meaning that user can close
  * this tab manually from tabbed pane (using 'X' button or by pressing mouse wheel on tab).
  *
- * @author Kotcrab
- */
+ *  */
 public abstract class Tab implements Disposable {
     private boolean activeTab;
     private TabbedPane pane;
