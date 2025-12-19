@@ -2,6 +2,7 @@ import com.vanniktech.maven.publish.JavaLibrary
 import com.vanniktech.maven.publish.JavadocJar
 
 buildscript {
+    ext.kotlin_version = '2.2.0'
     repositories {
         gradlePluginPortal()
         mavenCentral()
@@ -10,6 +11,7 @@ buildscript {
     dependencies {
         classpath "com.kotcrab.vis:vis-usl:0.2.1"
         classpath "com.badlogicgames.gdx:gdx-tools:1.9.2"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
@@ -17,6 +19,7 @@ plugins {
     id("com.github.ben-manes.versions") version "0.52.0"
     id("com.vanniktech.maven.publish.base") version "0.33.0"
 }
+apply plugin: 'kotlin'
 
 subprojects {
     apply plugin: "java"
@@ -89,4 +92,13 @@ subprojects {
         options.encoding = 'UTF-8'
         options.addStringOption('Xdoclint:none', '-quiet')
     }
+}
+repositories {
+    mavenCentral()
+}
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+}
+kotlin {
+    jvmToolchain(8)
 }

@@ -1,9 +1,12 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm'
+}
 archivesBaseName = "vis-usl"
-sourceCompatibility = 16
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 dependencies {
     testImplementation "junit:junit:$junitVersion"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 }
 
 task run(type: JavaExec) {
@@ -13,4 +16,10 @@ task run(type: JavaExec) {
     if (project.hasProperty("runArgs")) {
         args = Eval.me(runArgs)
     }
+}
+repositories {
+    mavenCentral()
+}
+kotlin {
+    jvmToolchain(16)
 }
