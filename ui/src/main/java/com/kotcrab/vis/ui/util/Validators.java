@@ -1,4 +1,3 @@
-
 package com.kotcrab.vis.ui.util;
 
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
@@ -7,8 +6,7 @@ import com.kotcrab.vis.ui.widget.VisValidatableTextField;
 /**
  * Provides premade validators that can be used with for example with {@link VisValidatableTextField} or {@link Dialogs}
  * when displaying input dialogs.
- *
- *  */
+ */
 public class Validators {
     /**
      * Shared static instance of {@link IntegerValidator}. Can be safely reused.
@@ -71,7 +69,7 @@ public class Validators {
         @Override
         public boolean validateInput(String input) {
             try {
-                float value = Float.valueOf(input);
+                float value = Float.parseFloat(input);
                 return equals ? value <= lesserThan : value < lesserThan;
             } catch (NumberFormatException ex) {
                 return false;
@@ -110,7 +108,7 @@ public class Validators {
         @Override
         public boolean validateInput(String input) {
             try {
-                float value = Float.valueOf(input);
+                float value = Float.parseFloat(input);
                 return useEquals ? value >= greaterThan : value > greaterThan;
             } catch (NumberFormatException ex) {
                 return false;
