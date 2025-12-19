@@ -76,7 +76,9 @@ public class Validators {
             }
         }
 
-        /*** @param equals if true &lt;= comparison will be used, if false &lt; will be used. */
+        /**
+         * @param equals if true <= comparison will be used, if false < will be used.
+         */
         public void setUseEquals(boolean equals) {
             this.equals = equals;
         }

@@ -27,4 +27,45 @@ class LesserThanValidatorTest {
         assertFalse(validatorEquals.validateInput(Float.MAX_VALUE.toString()))
         assertTrue(validatorEquals.validateInput(Float.MIN_VALUE.toString()))
     }
+
+    @Test
+    fun testSetUseEquals() {
+        val validator = LesserThanValidator(5F)
+
+        validator.setUseEquals(true)
+        assertTrue(validator.validateInput("5"))
+        assertTrue(validator.validateInput("4"))
+        assertFalse(validator.validateInput("6"))
+
+        validator.setUseEquals(false)
+        assertFalse(validator.validateInput("5"))
+        assertTrue(validator.validateInput("4"))
+        assertFalse(validator.validateInput("6"))
+    }
+
+    @Test
+    fun testSetLesserThan() {
+        val validator = LesserThanValidator(5F)
+
+        assertTrue(validator.validateInput("4"))
+        assertFalse(validator.validateInput("6"))
+
+        validator.setLesserThan(10F)
+        assertTrue(validator.validateInput("9"))
+        assertFalse(validator.validateInput("11"))
+        assertFalse(validator.validateInput("10")) // equals is false by default in this constructor
+    }
+
+    @Test
+    fun testSetLesserThanWithEquals() {
+        val validator = LesserThanValidator(5F, true)
+
+        assertTrue(validator.validateInput("5"))
+        assertFalse(validator.validateInput("6"))
+
+        validator.setLesserThan(10F)
+        assertTrue(validator.validateInput("10"))
+        assertTrue(validator.validateInput("9"))
+        assertFalse(validator.validateInput("11"))
+    }
 }
