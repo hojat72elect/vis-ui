@@ -26,4 +26,24 @@ class GreaterThanValidatorTest {
         assertTrue(validatorEquals.validateInput(Float.MAX_VALUE.toString()))
         assertFalse(validatorEquals.validateInput(Float.MIN_VALUE.toString()))
     }
+
+    @Test
+    fun testSetUseEquals() {
+        val validator = GreaterThanValidator(5F)
+        assertFalse(validator.validateInput("5"))
+        validator.setUseEquals(true)
+        assertTrue(validator.validateInput("5"))
+    }
+
+    @Test
+    fun testSetGreaterThan() {
+        val validator = GreaterThanValidator(5F)
+        assertTrue(validator.validateInput("6"))
+        assertFalse(validator.validateInput("4"))
+
+        validator.setGreaterThan(10F)
+
+        assertFalse(validator.validateInput("6"))
+        assertTrue(validator.validateInput("11"))
+    }
 }
