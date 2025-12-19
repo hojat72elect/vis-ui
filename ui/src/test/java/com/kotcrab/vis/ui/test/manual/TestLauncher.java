@@ -1,4 +1,3 @@
-
 package com.kotcrab.vis.ui.test.manual;
 
 import com.badlogic.gdx.Application.ApplicationType;

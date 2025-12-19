@@ -1,4 +1,3 @@
-
 package com.kotcrab.vis.ui.widget;
 
 import com.badlogic.gdx.Gdx;
@@ -10,11 +9,9 @@ import com.kotcrab.vis.ui.VisUI;
 
 /**
  * BusyBar is a type of indeterminate progress bar. This widget is usually added at the top of table and is shown
- * to indicate that some background work is going on. This widget should span across full width of table that is added to.
+ * to indicate that some background work is going on. This widget should span across full width of the table it's added to.
  * Default style of widget is blue rectangle that moves from left to right edge of screen in loop. For example you can
  * see it in FileChooser when opening directory containing thousand of files or checkout TestBusyBar in VisUI test application.
- *
- *  * @since 1.1.4
  */
 public class BusyBar extends Widget {
     private final BusyBarStyle style;
