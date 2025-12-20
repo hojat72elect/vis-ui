@@ -1,3 +1,6 @@
+***I managed to merge this library into my own fork of the LibGDX framework;that's why this repo is
+archived. I am going to delete this repo on or before 20th december 2025***
+
 # VisUI
 
 VisUI allows to create nice looking UI in libGDX using scene2d.ui. Library contains scene2d.ui skin, useful widgets like color picker and file chooser, it also contains modified scene2d.ui widgets to provide some extra functionality like focus borders, background change on over and click, etc.
