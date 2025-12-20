@@ -1,5 +1,5 @@
-***I managed to merge this library into my own fork of the LibGDX framework;that's why this repo is
-archived. I am going to delete this repo on or before 20th december 2025***
+***I managed to merge this library into my own fork of the LibGDX framework; that's why this repo is
+archived. I am going to delete this repo on or before 20th december 2030***
 
 # VisUI
 
